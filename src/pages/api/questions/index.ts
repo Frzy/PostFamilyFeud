@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import * as cheerio from 'cheerio'
 
-import type { QuestionType, AnswerType } from '@/utility/question'
+import type { Question, Answer } from '@/types/types'
 
 const FEUD_QUESTIONS_URL = 'https://www.familyfeudquestions.com/Index/question_vote'
 
@@ -11,13 +11,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const response = await fetch(`${FEUD_QUESTIONS_URL}/p/${page}`)
   const body = await response.text()
-  const questions: QuestionType[] = []
+  const questions: Question[] = []
   const $ = cheerio.load(body)
 
   $('.row.display .item').each(function () {
     const item = $(this)
     const text = $(this).find('h3').text()
-    const answers: AnswerType[] = []
+    const answers: Answer[] = []
 
     $(this)
       .find('.answer span')
