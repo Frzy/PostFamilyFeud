@@ -3,9 +3,9 @@ import { configureAbly } from '@ably-labs/react-hooks'
 import { ABLY_CHANNEL, ABLY_EVENTS, HOST_STORAGE_KEY } from '@/utility/constants'
 import * as Ably from 'ably'
 import Head from 'next/head'
+import store from 'store2'
 import HideIcon from '@mui/icons-material/VisibilityOff'
 import ShowIcon from '@mui/icons-material/Visibility'
-import store from 'store2'
 
 import {
   Box,
@@ -27,8 +27,15 @@ import {
   Stack,
   Collapse,
   Alert,
+  TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  SelectChangeEvent,
 } from '@mui/material'
-import { Question } from '@/types/types'
+import { Answer, Question } from '@/types/types'
+import { debounce } from '@/utility/functions'
 
 enum MODE {
   DEFAULT = 'default',
@@ -38,30 +45,54 @@ enum MODE {
 }
 
 const hostCache = store.namespace(HOST_STORAGE_KEY)
+const BASE_QUESTION: Question = {
+  text: '',
+  answers: [],
+}
 
 export default function Host() {
-  const [channel, setChannel] = React.useState<Ably.Types.RealtimeChannelPromise | null>(null)
-  const [mode, setMode] = React.useState<MODE>(MODE.DEFAULT)
-  const [fetchedQuestions, setFetchedQuestions] = React.useState<Question[]>([])
   const [activeQuestionIndex, setActiveQuestionIndex] = React.useState<number | null>(null)
-  const [showAnswerLookup, setShowAnswerLookup] = React.useState<boolean[]>([])
+  const [channel, setChannel] = React.useState<Ably.Types.RealtimeChannelPromise | null>(null)
+  const [customAnswersErrors, setCustomAnswersErrors] = React.useState<(string | undefined)[]>([])
+  const [customQuestion, setCustomQuestion] = React.useState(BASE_QUESTION)
+  const [fetchedQuestions, setFetchedQuestions] = React.useState<Question[]>([])
   const [fetching, setFetching] = React.useState(false)
-  const [question, setQuestion] = React.useState<Question | null>(null)
-  const [showAnswers, setShowAnswers] = React.useState(false)
   const [hasCachedQuestion, setHasCachedQuestion] = React.useState(false)
-
+  const [mode, setMode] = React.useState<MODE>(MODE.DEFAULT)
+  const [question, setQuestion] = React.useState<Question | null>(null)
+  const [showAnswerLookup, setShowAnswerLookup] = React.useState<boolean[]>([])
+  const [showAnswers, setShowAnswers] = React.useState(false)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debounceValidation = React.useMemo(() => debounce(validatePoints, 250), [])
   function handleStartRound() {
-    setMode(MODE.ROUND)
+    let newQuestion: Question | undefined
 
-    if (fetchedQuestions.length && activeQuestionIndex !== null) {
-      const newQuestion = fetchedQuestions[activeQuestionIndex]
+    switch (mode) {
+      case MODE.SEARCH:
+        if (fetchedQuestions.length && activeQuestionIndex !== null) {
+          newQuestion = { ...fetchedQuestions[activeQuestionIndex] }
 
+          setActiveQuestionIndex(null)
+          setFetchedQuestions([])
+        }
+
+      case MODE.ENTER:
+        newQuestion = { ...customQuestion }
+
+        setCustomQuestion(BASE_QUESTION)
+        setCustomAnswersErrors([])
+        break
+    }
+
+    if (newQuestion) {
       setQuestion(newQuestion)
       hostCache.set('question', newQuestion)
 
       if (channel) {
         channel.publish(ABLY_EVENTS.QUESTION_CHANGE, newQuestion)
       }
+
+      setMode(MODE.ROUND)
     }
   }
   async function handleFetchQuestions() {
@@ -99,6 +130,63 @@ export default function Host() {
     setQuestion(null)
     setHasCachedQuestion(false)
     hostCache.remove('question')
+  }
+  function handleCustomAnswerChange(index: number) {
+    return (event: React.ChangeEvent<HTMLInputElement>) => {
+      const { value } = event.target
+      const answers = [...customQuestion.answers]
+
+      answers[index].text = value
+
+      setCustomQuestion({ ...customQuestion, answers })
+    }
+  }
+  function handleCustomAnswerPointChange(index: number) {
+    return (event: React.ChangeEvent<HTMLInputElement>) => {
+      const { value } = event.target
+      const answers = [...customQuestion.answers]
+      const errors = [...customAnswersErrors]
+      const points = parseInt(value)
+
+      answers[index].points = isNaN(points) ? (value as unknown as number) : points
+
+      setCustomQuestion({ ...customQuestion, answers })
+      debounceValidation(answers)
+    }
+  }
+  function validateCustomQuestion() {
+    return (
+      !customQuestion.text ||
+      !customQuestion.answers.length ||
+      customQuestion.answers.some((a) => {
+        return !a.text || !a.points
+      })
+    )
+  }
+  function validatePoints(answers: Answer[]) {
+    const errors = [...customAnswersErrors]
+    for (let i = answers.length - 1; i >= 0; i--) {
+      const curPoint = answers[i].points
+      let curError = undefined
+
+      if (curPoint && isNaN(curPoint)) {
+        curError = 'Must be a number'
+      } else if (curPoint && !isNaN(curPoint)) {
+        const toCheck = answers.slice(0, i)
+
+        const found = toCheck.find((answerToCheck) => {
+          const prevPoint = answerToCheck.points
+
+          return prevPoint && !isNaN(prevPoint) && curPoint >= prevPoint
+        })
+
+        if (found) curError = 'Number is greater than a previous answer'
+      }
+
+      errors[i] = curError
+    }
+
+    setCustomAnswersErrors(errors)
   }
 
   React.useEffect(() => {
@@ -159,7 +247,7 @@ export default function Host() {
               </Stack>
             </Paper>
             <Button sx={{ mt: 2 }} variant='outlined' onClick={handleResendQuestion}>
-              Resend to Judges
+              Republish Question
             </Button>
             <Button sx={{ mt: 2 }} variant='contained' onClick={handleReset}>
               Pick Another Question
@@ -201,7 +289,7 @@ export default function Host() {
             )}
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
-                <Button variant='outlined' onClick={() => setMode(MODE.ENTER)} disabled fullWidth>
+                <Button variant='outlined' onClick={() => setMode(MODE.ENTER)} fullWidth>
                   Enter Question
                 </Button>
               </Grid>
@@ -295,6 +383,109 @@ export default function Host() {
               </Button>
             </Paper>
           </React.Fragment>
+        )}
+        {mode === MODE.ENTER && (
+          <Grid container spacing={2} mt={2}>
+            <Grid item xs={12}>
+              <Typography>Enter custom question below.</Typography>
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                autoFocus
+                maxRows={2}
+                multiline
+                label='Question'
+                placeholder='Enter Custom Qustion Here'
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                  const { value } = event.target
+
+                  setCustomQuestion({ ...customQuestion, text: value })
+                }}
+                value={customQuestion.text}
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <FormControl fullWidth>
+                <InputLabel id='answer-total-label'>Total Answers</InputLabel>
+                <Select
+                  labelId='answer-total-label'
+                  id='answer-total'
+                  value={customQuestion.answers.length ? customQuestion.answers.length : ''}
+                  label='Total Answers'
+                  onChange={(event: SelectChangeEvent<number>) => {
+                    let { value } = event.target
+                    if (typeof value === 'string') value = parseInt(value)
+
+                    const blankErrors: undefined[] = Array.from({ length: value }, () => undefined)
+                    const blankAnswers: Answer[] = Array.from({ length: value }, () => ({
+                      text: '',
+                      points: 0,
+                      isAnswered: false,
+                    }))
+
+                    const answers = [...customQuestion.answers, ...blankAnswers].slice(0, value)
+                    const errors = [...customAnswersErrors, ...blankErrors].slice(0, value)
+
+                    setCustomQuestion({ ...customQuestion, answers })
+                    setCustomAnswersErrors(errors)
+                  }}
+                >
+                  <MenuItem value={3}>Three</MenuItem>
+                  <MenuItem value={4}>Four</MenuItem>
+                  <MenuItem value={5}>Five</MenuItem>
+                  <MenuItem value={6}>Six</MenuItem>
+                  <MenuItem value={7}>Seven</MenuItem>
+                  <MenuItem value={8}>Eight</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            {customQuestion.answers.map((a, i) => (
+              <Grid key={i} container spacing={2} sx={{ marginLeft: 0, marginTop: 0 }}>
+                <Grid item xs={8}>
+                  <TextField
+                    label={`Answer ${i + 1}`}
+                    value={a.text}
+                    onChange={handleCustomAnswerChange(i)}
+                    fullWidth
+                  />
+                </Grid>
+                <Grid item xs={4}>
+                  <TextField
+                    label={`Answer ${i + 1} Points`}
+                    value={a.points ? a.points : ''}
+                    error={!!customAnswersErrors[i]}
+                    helperText={customAnswersErrors[i] ? customAnswersErrors[i] : undefined}
+                    onChange={handleCustomAnswerPointChange(i)}
+                    fullWidth
+                  />
+                </Grid>
+              </Grid>
+            ))}
+            <Grid item xs={6}>
+              <Button
+                variant='outlined'
+                onClick={() => {
+                  setCustomQuestion(BASE_QUESTION)
+                  setCustomAnswersErrors([])
+                  setMode(MODE.DEFAULT)
+                }}
+                fullWidth
+              >
+                Cancel
+              </Button>
+            </Grid>
+            <Grid item xs={6}>
+              <Button
+                variant='contained'
+                disabled={validateCustomQuestion()}
+                onClick={handleStartRound}
+                fullWidth
+              >
+                Submit Question
+              </Button>
+            </Grid>
+          </Grid>
         )}
       </Container>
     </React.Fragment>

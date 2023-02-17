@@ -9,3 +9,26 @@ export function getAnsweredPoints(q: Question, multiple = 1) {
     return cur
   }, 0)
 }
+
+export function debounce<T extends (...args: any[]) => any>(
+  fn: T,
+  wait: number,
+  abortValue: any = undefined,
+) {
+  let cancel = () => {}
+  // type Awaited<T> = T extends PromiseLike<infer U> ? U : T
+  type ReturnT = Awaited<ReturnType<T>>
+  const wrapFunc = (...args: Parameters<T>): Promise<ReturnT> => {
+    cancel()
+    return new Promise((resolve, reject) => {
+      const timer = setTimeout(() => resolve(fn(...args)), wait)
+      cancel = () => {
+        clearTimeout(timer)
+        if (abortValue !== undefined) {
+          reject(abortValue)
+        }
+      }
+    })
+  }
+  return wrapFunc
+}
