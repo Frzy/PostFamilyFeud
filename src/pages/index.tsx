@@ -10,11 +10,19 @@ import {
   CardMedia,
   Typography,
   Box,
+  CardActions,
+  Button,
+  Collapse,
 } from '@mui/material'
+import Image from 'next/image'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
+  const [showBoardLink, setShowBoardLink] = React.useState(false)
+  const [showHostLink, setShowHostLink] = React.useState(false)
+  const [showJudgeLink, setShowJudgeLink] = React.useState(false)
+
   return (
     <React.Fragment>
       <Head>
@@ -48,6 +56,16 @@ export default function Home() {
                 </Typography>
               </CardContent>
             </CardActionArea>
+            <Collapse in={showBoardLink}>
+              <Box width='100%' display='flex' justifyContent='center'>
+                <Image src='/images/board_qrcode.png' alt='host qr code' width={300} height={300} />
+              </Box>
+            </Collapse>
+            <CardActions>
+              <Button onClick={() => setShowBoardLink(!showBoardLink)}>
+                {showBoardLink ? 'Hide' : 'Show'} Link
+              </Button>
+            </CardActions>
           </Card>
           <Card sx={{ maxWidth: 345 }}>
             <CardActionArea href='/host'>
@@ -66,6 +84,16 @@ export default function Home() {
                 </Typography>
               </CardContent>
             </CardActionArea>
+            <Collapse in={showHostLink}>
+              <Box width='100%' display='flex' justifyContent='center'>
+                <Image src='/images/host_qrcode.png' alt='host qr code' width={300} height={300} />
+              </Box>
+            </Collapse>
+            <CardActions>
+              <Button onClick={() => setShowHostLink(!showHostLink)}>
+                {showHostLink ? 'Hide' : 'Show'} Link
+              </Button>
+            </CardActions>
           </Card>
           <Card sx={{ maxWidth: 345 }}>
             <CardActionArea href='/judge'>
@@ -80,10 +108,20 @@ export default function Home() {
                   Judge
                 </Typography>
                 <Typography variant='body2' color='text.secondary'>
-                  Display the Family Feud Judge screen.
+                  Section for the judges to confirm or deny contestants responses to questions.
                 </Typography>
               </CardContent>
             </CardActionArea>
+            <Collapse in={showJudgeLink}>
+              <Box width='100%' display='flex' justifyContent='center'>
+                <Image src='/images/judge_qrcode.png' alt='host qr code' width={300} height={300} />
+              </Box>
+            </Collapse>
+            <CardActions>
+              <Button onClick={() => setShowJudgeLink(!showJudgeLink)}>
+                {showJudgeLink ? 'Hide' : 'Show'} Link
+              </Button>
+            </CardActions>
           </Card>
         </Box>
       </Container>
