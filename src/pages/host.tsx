@@ -75,7 +75,7 @@ export default function Host() {
           setActiveQuestionIndex(null)
           setFetchedQuestions([])
         }
-
+        break
       case MODE.ENTER:
         newQuestion = { ...customQuestion }
 

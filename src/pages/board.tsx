@@ -10,7 +10,7 @@ import type { Game, Question } from '@/types/types'
 import { ABLY_CHANNEL, ABLY_EVENTS } from '@/utility/constants'
 
 export default function BoardView() {
-  const [channel, setChannel] = React.useState<Ably.Types.RealtimeChannelPromise | null>(null)
+  const [, setChannel] = React.useState<Ably.Types.RealtimeChannelPromise | null>(null)
   const [game, setGame] = React.useState<Game>()
   const [question, setQuestion] = React.useState<Question>()
 
