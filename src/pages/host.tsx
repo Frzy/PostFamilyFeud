@@ -70,10 +70,14 @@ export default function Host() {
           pt: 2,
         }}
       >
-        <Typography variant='h1' align='center'>
-          Host
-        </Typography>
-        <Divider sx={{ mb: 1 }} />
+        {!activeQuestion && (
+          <React.Fragment>
+            <Typography variant='h1' align='center'>
+              Host
+            </Typography>
+            <Divider sx={{ mb: 1 }} />
+          </React.Fragment>
+        )}
         {!activeQuestion && cacheQuestion && (
           <Alert severity='warning' sx={{ '& .MuiAlert-message': { flexGrow: 1 } }}>
             <AlertTitle>Previous Quesiton Detected</AlertTitle>
