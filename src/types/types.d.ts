@@ -1,3 +1,7 @@
+export type RoundQuestion = {
+  roundMode: ROUND_MODE
+} & Question
+
 export type Answer = {
   text: string
   points: number
