@@ -34,6 +34,16 @@ export default function Host() {
       channel.publish(ABLY_EVENTS.QUESTION_CHANGE, quesiton)
     }
   }
+  function playThemeSong() {
+    if (channel) {
+      channel.publish(ABLY_EVENTS.PLAY_THEME, { play: true })
+    }
+  }
+  function stopThemeSong() {
+    if (channel) {
+      channel.publish(ABLY_EVENTS.PLAY_THEME, { play: false })
+    }
+  }
 
   React.useEffect(() => {
     const ably: Ably.Types.RealtimePromise = configureAbly({
@@ -92,6 +102,8 @@ export default function Host() {
           <QuestionViewer
             question={activeQuestion}
             onPublishQuestion={publishQuestion}
+            onPlayTheme={playThemeSong}
+            onStopTheme={stopThemeSong}
             onExit={() => {
               setActiveQuestion(undefined)
             }}

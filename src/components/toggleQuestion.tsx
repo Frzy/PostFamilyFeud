@@ -1,13 +1,6 @@
 import * as React from 'react'
 
-import {
-  Box,
-  Grid,
-  GridProps,
-  ToggleButton,
-  ToggleButtonGroup,
-  ToggleButtonProps,
-} from '@mui/material'
+import { Grid, GridProps, ToggleButton, ToggleButtonProps } from '@mui/material'
 
 interface ToggleQuestionProps extends Omit<GridProps, 'onChange'> {
   question: React.ReactNode
@@ -15,6 +8,7 @@ interface ToggleQuestionProps extends Omit<GridProps, 'onChange'> {
   toggleButtonOneText?: React.ReactNode
   toggleButtonTwoProps: ToggleButtonProps
   toggleButtonTwoText?: React.ReactNode
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onChange?: (event: React.MouseEvent<HTMLElement, MouseEvent>, value: any) => void
 }
 export default function ToggleQuestion({

@@ -140,6 +140,7 @@ export default function ManualQuestionEntry({
                   text: '',
                   points: 0,
                   isAnswered: false,
+                  showAnswer: false,
                 }))
 
                 const answers = [...question.answers, ...blankAnswers].slice(0, value)

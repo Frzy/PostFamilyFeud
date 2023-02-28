@@ -6,6 +6,7 @@ export type Answer = {
   text: string
   points: number
   isAnswered: boolean
+  showAnswer: boolean
 }
 export type Question = {
   text: string
@@ -21,5 +22,12 @@ export type Game = {
   teamOne: Team
   teamTwo: Team
   totalRounds: number
-  stikes: number
+  roundsPlayed: number
+  strikes: number
+}
+
+export type Volume = {
+  theme: number
+  ding: number
+  buzzer: number
 }

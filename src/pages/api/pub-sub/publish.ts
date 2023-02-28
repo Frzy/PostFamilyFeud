@@ -20,7 +20,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const client = new Ably.Rest(process.env.ABLY_API_KEY)
 
-  var channel = client.channels.get('status-updates')
+  const channel = client.channels.get('status-updates')
   const message: { text: string } = req.body
 
   await channel.publish('update-from-server', message)

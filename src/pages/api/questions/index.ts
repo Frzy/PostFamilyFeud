@@ -15,7 +15,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const $ = cheerio.load(body)
 
   $('.row.display .item').each(function () {
-    const item = $(this)
     const text = $(this).find('h3').text()
     const answers: Answer[] = []
 
@@ -32,6 +31,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             text: answerText[0].trim(),
             points: parseInt(points),
             isAnswered: false,
+            showAnswer: false,
           })
         }
       })

@@ -1,18 +1,92 @@
 import * as React from 'react'
-import { configureAbly } from '@ably-labs/react-hooks'
 import * as Ably from 'ably'
+import { configureAbly } from '@ably-labs/react-hooks'
 import Head from 'next/head'
-
-import { Container, Typography } from '@mui/material'
-import Board from '@/components/board'
-
-import type { Game, Question } from '@/types/types'
 import { ABLY_CHANNEL, ABLY_EVENTS } from '@/utility/constants'
 
+import { Box, Container, Zoom, Typography, Stack, Paper } from '@mui/material'
+import Board from '@/components/board/board'
+import Image from 'next/image'
+
+import type { Game, RoundQuestion } from '@/types/types'
+
 export default function BoardView() {
-  const [, setChannel] = React.useState<Ably.Types.RealtimeChannelPromise | null>(null)
   const [game, setGame] = React.useState<Game>()
-  const [question, setQuestion] = React.useState<Question>()
+  const [question, setQuestion] = React.useState<RoundQuestion>()
+  const [showStrike, setShowStrike] = React.useState(false)
+  const [showQuestion, setShowQuestion] = React.useState(false)
+  const [showScore, setShowScore] = React.useState(false)
+  const [strikeSize, setStrikeSize] = React.useState(0)
+
+  const containerRef = React.useRef<HTMLDivElement>(null)
+  const themeRef = React.useRef<HTMLAudioElement>(null)
+  const buzzerRef = React.useRef<HTMLAudioElement>(null)
+  const dingRef = React.useRef<HTMLAudioElement>(null)
+
+  function playThemeMusic(loop = false) {
+    try {
+      if (themeRef.current) {
+        themeRef.current.loop = loop
+        themeRef.current.play()
+      }
+    } catch (error) {
+      /* empty */
+    }
+  }
+  function stopThemeMusic() {
+    try {
+      if (themeRef.current) {
+        themeRef.current.pause()
+        themeRef.current.loop = false
+        themeRef.current.currentTime = 0
+      }
+    } catch (error) {
+      /* empty */
+    }
+  }
+  function playDing() {
+    try {
+      if (dingRef.current) {
+        dingRef.current.play()
+      }
+    } catch (error) {
+      /* empty */
+    }
+  }
+  function playStrike() {
+    try {
+      if (buzzerRef.current) {
+        buzzerRef.current.play()
+      }
+    } catch (error) {
+      /* empty */
+    }
+  }
+
+  function handleWrongAnswer(newGame: Game) {
+    setShowStrike(true)
+    setGame(newGame)
+  }
+  function handleCorrectAnswer(newQuestion: RoundQuestion) {
+    playDing()
+    setQuestion(newQuestion)
+  }
+
+  function showTeamScores() {
+    setShowScore(true)
+    setShowQuestion(false)
+  }
+  function hideTeamScores() {
+    setShowScore(false)
+    setShowQuestion(false)
+  }
+  function handleResizeEvent() {
+    if (containerRef.current) {
+      const bounds = containerRef.current.getBoundingClientRect()
+
+      setStrikeSize((bounds.width - 16) / 3)
+    }
+  }
 
   React.useEffect(() => {
     const ably: Ably.Types.RealtimePromise = configureAbly({
@@ -25,16 +99,63 @@ export default function BoardView() {
       setGame(newGame)
     })
     _channel.subscribe(ABLY_EVENTS.QUESTION_CHANGE, (message: Ably.Types.Message) => {
-      const newQuestion: Question = message.data
+      const newQuestion: RoundQuestion = message.data
 
       setQuestion(newQuestion)
+      if (newQuestion) hideTeamScores()
+      stopThemeMusic()
     })
-    setChannel(_channel)
+    _channel.subscribe(ABLY_EVENTS.WRONG_ANSWER, (message: Ably.Types.Message) => {
+      const newGame: Game = message.data
+
+      handleWrongAnswer(newGame)
+    })
+    _channel.subscribe(ABLY_EVENTS.CORRECT_ANSWER, (message: Ably.Types.Message) => {
+      const newQuesiton: RoundQuestion = message.data
+
+      handleCorrectAnswer(newQuesiton)
+    })
+    _channel.subscribe(ABLY_EVENTS.NEW_ROUND, (message: Ably.Types.Message) => {
+      const newGame: Game = message.data
+
+      setGame(newGame)
+      setQuestion(undefined)
+      showTeamScores()
+      playThemeMusic(true)
+    })
+    _channel.subscribe(ABLY_EVENTS.SHOW_QUESTION, (message: Ably.Types.Message) => {
+      const { show: newShowQuestion }: { show: boolean } = message.data
+
+      setShowQuestion(newShowQuestion)
+    })
+    _channel.subscribe(ABLY_EVENTS.PLAY_THEME, (message: Ably.Types.Message) => {
+      const { play: shouldPlayTheme }: { play: boolean } = message.data
+
+      if (shouldPlayTheme) {
+        playThemeMusic()
+      } else {
+        stopThemeMusic()
+      }
+    })
+
+    window.addEventListener('resize', handleResizeEvent)
+    handleResizeEvent()
 
     return () => {
+      window.removeEventListener('resize', handleResizeEvent)
       _channel.unsubscribe()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  React.useEffect(() => {
+    if (showStrike) {
+      playStrike()
+      window.setTimeout(() => {
+        setShowStrike(false)
+      }, 2500)
+    }
+  }, [showStrike])
 
   return (
     <React.Fragment>
@@ -44,8 +165,91 @@ export default function BoardView() {
         <meta name='viewport' content='width=device-width, initial-scale=1' />
         <link rel='icon' href='/favicon.ico' />
       </Head>
-      <Container maxWidth='xl' sx={{ minWidth: 350 }}>
-        <Board question={question} game={game} multiple={1} />
+      <Container ref={containerRef} maxWidth='xl' sx={{ minWidth: 350, position: 'relative' }}>
+        <Board
+          question={question}
+          game={game}
+          showQuestion={showQuestion}
+          spacing={1}
+          sx={{ mt: 1 }}
+        />
+        <Zoom in={showStrike} mountOnEnter unmountOnExit>
+          <Box
+            position='absolute'
+            top={0}
+            bottom={0}
+            right={0}
+            left={0}
+            display='flex'
+            alignItems='center'
+            justifyContent='center'
+          >
+            {game &&
+              containerRef.current &&
+              [...Array(game.strikes < 4 ? game.strikes : 1)].map((_, i) => (
+                <Image
+                  key={i}
+                  src='/images/strike.png'
+                  alt='strike'
+                  width={strikeSize}
+                  height={strikeSize}
+                />
+              ))}
+          </Box>
+        </Zoom>
+        <Zoom in={game && showScore}>
+          <Box
+            position='absolute'
+            top={0}
+            bottom={0}
+            right={0}
+            left={0}
+            display='flex'
+            alignItems='center'
+            justifyContent='center'
+          >
+            <Box
+              sx={{
+                py: { xs: 2, sm: 5 },
+                px: 2,
+                rowGap: 5,
+                backgroundColor: 'rgba(0, 0, 0, 0.95)',
+                borderRadius: 2,
+                width: { xs: 300, sm: '90%' },
+                display: 'flex',
+                justifyContent: 'space-evenly',
+                flexDirection: {
+                  xs: 'column',
+                  sm: 'row',
+                },
+              }}
+            >
+              <Stack>
+                <Typography variant='h1' fontWeight='fontWeightBold' align='center'>
+                  {game?.teamOne.name}
+                </Typography>
+                <Paper variant='outlined' sx={{ p: 2, minWidth: { xs: 200, md: 300 } }}>
+                  <Typography fontWeight='fontWeightBold' fontSize={100} align='center'>
+                    {game?.teamOne.points}
+                  </Typography>
+                </Paper>
+              </Stack>
+              <Stack>
+                <Typography variant='h1' fontWeight='fontWeightBold' align='center'>
+                  {game?.teamTwo.name}
+                </Typography>
+                <Paper variant='outlined' sx={{ p: 2, minWidth: { xs: 200, md: 300 } }}>
+                  <Typography fontWeight='fontWeightBold' fontSize={100} align='center'>
+                    {game?.teamTwo.points}
+                  </Typography>
+                </Paper>
+              </Stack>
+            </Box>
+          </Box>
+        </Zoom>
+        <audio ref={dingRef} src='/sounds/family_feud_ding.mp3' />
+        <audio ref={buzzerRef} src='/sounds/family_feud_buzzer.mp3' />
+        <audio ref={themeRef} src='/sounds/family_feud_theme.mp3' />
       </Container>
     </React.Fragment>
   )

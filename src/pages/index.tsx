@@ -1,6 +1,5 @@
 import * as React from 'react'
 import Head from 'next/head'
-import { Inter } from '@next/font/google'
 
 import {
   Container,
@@ -15,8 +14,6 @@ import {
   Collapse,
 } from '@mui/material'
 import Image from 'next/image'
-
-const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
   const [showBoardLink, setShowBoardLink] = React.useState(false)

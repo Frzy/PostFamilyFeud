@@ -14,20 +14,27 @@ import Paper from '@mui/material/Paper'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
+import PlayArrowIcon from '@mui/icons-material/PlayArrow'
+import StopIcon from '@mui/icons-material/Stop'
+
 type FontSize = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
 
 interface QuestionViewerProps {
   question: RoundQuestion
   onExit?: () => void
+  onPlayTheme?: () => void
+  onStopTheme?: () => void
   onPublishQuestion?: (question: RoundQuestion) => void
 }
 
 const FONT_SIZES: FontSize[] = ['h1', 'h2', 'h3', 'h4', 'h5']
 
 export default function QuestionViewer({
-  question,
   onExit,
+  onPlayTheme,
   onPublishQuestion,
+  onStopTheme,
+  question,
 }: QuestionViewerProps) {
   const [fontSizeIndex, setFontSizeIndex] = React.useState(1)
   const [showAnswers, setShowAnswers] = React.useState(false)
@@ -44,8 +51,8 @@ export default function QuestionViewer({
 
   return (
     <Box pb={onExit ? 8 : 0}>
-      <Stack spacing={2}>
-        <Paper variant='outlined' sx={{ p: 1 }}>
+      <Stack spacing={1}>
+        <Paper sx={{ p: 1 }}>
           <Typography variant='h3' align='center'>
             Question
           </Typography>
@@ -73,7 +80,7 @@ export default function QuestionViewer({
             </React.Fragment>
           )}
         </Paper>
-        <Paper variant='outlined' sx={{ p: 1, pb: 0 }}>
+        <Paper sx={{ p: 1, pb: 0 }}>
           <Typography variant='h3' align='center'>
             Answers
           </Typography>
@@ -92,6 +99,14 @@ export default function QuestionViewer({
               ))}
             </List>
           </Collapse>
+        </Paper>
+        <Paper sx={{ p: 1, display: 'flex', gap: 1 }}>
+          <Button startIcon={<StopIcon />} onClick={onStopTheme} variant='outlined' fullWidth>
+            Stop Theme Song
+          </Button>
+          <Button startIcon={<PlayArrowIcon />} onClick={onPlayTheme} variant='outlined' fullWidth>
+            Play Theme Song
+          </Button>
         </Paper>
       </Stack>
       {onExit && (
