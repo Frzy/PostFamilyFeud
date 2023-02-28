@@ -57,7 +57,7 @@ export default function BoardTile({
             backfaceVisibility: 'hidden',
           }}
         >
-          <NumberedBoardTile position={position} sx={{}} />
+          <NumberedBoardTile position={position} />
         </Box>
         <Box
           sx={{
