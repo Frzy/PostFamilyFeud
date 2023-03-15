@@ -151,7 +151,7 @@ export default function BoardView() {
       playStrike()
       window.setTimeout(() => {
         setShowStrike(false)
-      }, 2500)
+      }, 1000)
     }
   }, [showStrike])
 

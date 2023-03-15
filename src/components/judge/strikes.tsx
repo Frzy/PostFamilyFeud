@@ -25,7 +25,7 @@ export default function Strikes({ strikes = 0, disabled, onChange }: StrikeProps
       if (onChange)
         onChange(
           substract ? Math.max(strikes - 1, 0) : Math.min(4, strikes + 1),
-          showStrikeAnimation,
+          substract ? false : showStrikeAnimation,
         )
     }
   }
