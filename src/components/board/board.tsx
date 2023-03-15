@@ -79,7 +79,7 @@ export default function Board2({ game, question, showQuestion, ...other }: Board
               )}
             </Grid>
             <Grid item xs={4} sx={{ display: 'flex', justifyContent: 'center' }}>
-              <PointTotal total={getAnsweredPoints(question)} />
+              <PointTotal total={getAnsweredPoints(question?.answers, question?.roundMode)} />
             </Grid>
             <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
               <Strike active={game ? game?.strikes >= 1 : false} />
@@ -94,7 +94,7 @@ export default function Board2({ game, question, showQuestion, ...other }: Board
               xs={6}
               sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
             >
-              <PointTotal total={getAnsweredPoints(question)} />
+              <PointTotal total={getAnsweredPoints(question?.answers, question?.roundMode)} />
             </Grid>
             <Grid
               item

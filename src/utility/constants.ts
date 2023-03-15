@@ -3,19 +3,21 @@ import { Theme } from '@mui/material'
 import { Game } from '@/types/types'
 
 export enum ABLY_EVENTS {
-  GAME_CHANGE = 'gameChange',
-  QUESTION_CHANGE = 'questionChange',
-  WRONG_ANSWER = 'wrongAnswer',
   CORRECT_ANSWER = 'correctAnswer',
+  GAME_CHANGE = 'gameChange',
   NEW_ROUND = 'newRound',
-  SHOW_QUESTION = 'showQuestion',
   PLAY_THEME = 'playTheme',
+  PUBLISH_QUESITON = 'publishQuestion',
+  QUESTION_CHANGE = 'questionChange',
+  SHOW_QUESTION = 'showQuestion',
+  WRONG_ANSWER = 'wrongAnswer',
 }
 
 export const ABLY_CHANNEL = 'status-updates'
 export const STORAGE_KEY = 'PostFamilyFeud'
 export const HOST_STORAGE_KEY = 'PostFamilyFeudHost'
 export const JUDGE_STORAGE_KEY = 'PostFamilyFeudJudge'
+export const QUESTION_STORAGE_KEY = 'PostFamilyFeudJudge'
 
 export enum ROUND_MODE {
   NONE = 'none',

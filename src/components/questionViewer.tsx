@@ -5,7 +5,6 @@ import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Chip from '@mui/material/Chip'
 import Collapse from '@mui/material/Collapse'
-import Container from '@mui/material/Container'
 import Divider from '@mui/material/Divider'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
@@ -14,28 +13,15 @@ import Paper from '@mui/material/Paper'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
-import PlayArrowIcon from '@mui/icons-material/PlayArrow'
-import StopIcon from '@mui/icons-material/Stop'
-
 type FontSize = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
 
 interface QuestionViewerProps {
   question: RoundQuestion
-  onExit?: () => void
-  onPlayTheme?: () => void
-  onStopTheme?: () => void
-  onPublishQuestion?: (question: RoundQuestion) => void
 }
 
 const FONT_SIZES: FontSize[] = ['h1', 'h2', 'h3', 'h4', 'h5']
 
-export default function QuestionViewer({
-  onExit,
-  onPlayTheme,
-  onPublishQuestion,
-  onStopTheme,
-  question,
-}: QuestionViewerProps) {
+export default function QuestionViewer({ question }: QuestionViewerProps) {
   const [fontSizeIndex, setFontSizeIndex] = React.useState(1)
   const [showAnswers, setShowAnswers] = React.useState(false)
 
@@ -45,12 +31,9 @@ export default function QuestionViewer({
   function handleDecreaseFontSize() {
     setFontSizeIndex((prev) => Math.min(prev + 1, FONT_SIZES.length - 1))
   }
-  function handlePublishQuestion() {
-    if (onPublishQuestion) onPublishQuestion(question)
-  }
 
   return (
-    <Box pb={onExit ? 8 : 0}>
+    <Box>
       <Stack spacing={1}>
         <Paper sx={{ p: 1 }}>
           <Typography variant='h3' align='center'>
@@ -71,14 +54,6 @@ export default function QuestionViewer({
               Bigger
             </Button>
           </Box>
-          {onPublishQuestion && (
-            <React.Fragment>
-              <Divider sx={{ my: 1 }} />
-              <Button variant='outlined' onClick={handlePublishQuestion} fullWidth>
-                Re-Publish Question
-              </Button>
-            </React.Fragment>
-          )}
         </Paper>
         <Paper sx={{ p: 1, pb: 0 }}>
           <Typography variant='h3' align='center'>
@@ -100,44 +75,7 @@ export default function QuestionViewer({
             </List>
           </Collapse>
         </Paper>
-        <Paper sx={{ p: 1, display: 'flex', gap: 1 }}>
-          <Button startIcon={<StopIcon />} onClick={onStopTheme} variant='outlined' fullWidth>
-            Stop Theme Song
-          </Button>
-          <Button startIcon={<PlayArrowIcon />} onClick={onPlayTheme} variant='outlined' fullWidth>
-            Play Theme Song
-          </Button>
-        </Paper>
       </Stack>
-      {onExit && (
-        <Container
-          maxWidth='xl'
-          disableGutters
-          sx={{
-            position: 'fixed',
-            bottom: -1,
-            left: 0,
-            right: 0,
-            height: 57,
-          }}
-        >
-          <Paper
-            square
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              height: '100%',
-              px: 3,
-            }}
-            elevation={3}
-          >
-            <Button size='large' onClick={onExit} fullWidth>
-              Pick Another Question
-            </Button>
-          </Paper>
-        </Container>
-      )}
     </Box>
   )
 }

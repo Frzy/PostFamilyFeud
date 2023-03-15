@@ -1,12 +1,12 @@
-import type { RoundQuestion } from '@/types/types'
+import type { Answer } from '@/types/types'
 import { ROUND_MODE } from './constants'
 
-export function getAnsweredPoints(q?: RoundQuestion) {
-  if (!q || !Array.isArray(q.answers)) return 0
-  const multiple = getMultiplier(q.roundMode)
+export function getAnsweredPoints(answers?: Answer[], roundMode?: ROUND_MODE) {
+  if (!answers || !Array.isArray(answers)) return 0
+  const multiplier = getMultiplier(roundMode || ROUND_MODE.NORMAL)
 
-  return q.answers.reduce((cur, next) => {
-    if (next.isAnswered) return cur + next.points * multiple
+  return answers.reduce((cur, next) => {
+    if (next.isAnswered) return cur + next.points * multiplier
 
     return cur
   }, 0)

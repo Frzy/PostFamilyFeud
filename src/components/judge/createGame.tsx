@@ -1,8 +1,6 @@
 import * as React from 'react'
 import {
-  Box,
   Button,
-  Container,
   FormControl,
   Grid,
   InputLabel,
@@ -10,6 +8,7 @@ import {
   Paper,
   Select,
   SelectChangeEvent,
+  Stack,
   TextField,
   Typography,
 } from '@mui/material'
@@ -19,9 +18,8 @@ import { BASE_GAME } from '@/utility/constants'
 
 interface CreateGameProps {
   onCreate?: (game: Game) => void
-  onExit?: () => void
 }
-export default function CreateGame({ onCreate, onExit }: CreateGameProps) {
+export default function CreateGame({ onCreate }: CreateGameProps) {
   const [game, setGame] = React.useState<Game>(BASE_GAME)
 
   function handleTotalRoundChange(event: SelectChangeEvent) {
@@ -31,11 +29,11 @@ export default function CreateGame({ onCreate, onExit }: CreateGameProps) {
   }
 
   return (
-    <Box>
-      <Paper sx={{ mt: 1, p: 2 }}>
+    <Stack spacing={1}>
+      <Paper sx={{ p: 2 }}>
         <Typography>Please fill the form out below to create a Family Fued game.</Typography>
       </Paper>
-      <Paper sx={{ mt: 1, p: 2 }}>
+      <Paper sx={{ p: 2 }}>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={8}>
             <TextField
@@ -125,51 +123,23 @@ export default function CreateGame({ onCreate, onExit }: CreateGameProps) {
           </Grid>
         </Grid>
       </Paper>
-      {(onCreate || onExit) && (
-        <Container
-          maxWidth='xl'
-          disableGutters
-          sx={{
-            position: 'fixed',
-            bottom: -1,
-            left: 0,
-            right: 0,
-            height: 57,
+      {onCreate && (
+        <Button
+          variant='outlined'
+          onClick={() => {
+            if (onCreate) onCreate(game)
           }}
+          disabled={
+            !game.teamOne.name ||
+            !game.teamTwo.name ||
+            isNaN(parseInt(`${game.teamOne.points}`)) ||
+            isNaN(parseInt(`${game.teamTwo.points}`))
+          }
+          fullWidth
         >
-          <Paper
-            square
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              height: '100%',
-              px: 3,
-            }}
-            elevation={3}
-          >
-            {onExit ? <Button onClick={onExit}>Cancel</Button> : <div />}
-            {onCreate ? (
-              <Button
-                size='large'
-                onClick={() => {
-                  if (onCreate) onCreate(game)
-                }}
-                disabled={
-                  !game.teamOne.name ||
-                  !game.teamTwo.name ||
-                  isNaN(parseInt(`${game.teamOne.points}`)) ||
-                  isNaN(parseInt(`${game.teamTwo.points}`))
-                }
-              >
-                Submit
-              </Button>
-            ) : (
-              <div />
-            )}
-          </Paper>
-        </Container>
+          Submit
+        </Button>
       )}
-    </Box>
+    </Stack>
   )
 }

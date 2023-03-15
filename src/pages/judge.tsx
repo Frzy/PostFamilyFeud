@@ -1,386 +1,235 @@
 import * as React from 'react'
-import { ABLY_CHANNEL, ABLY_EVENTS, JUDGE_STORAGE_KEY } from '@/utility/constants'
-import { configureAbly } from '@ably-labs/react-hooks'
-import { getAnsweredPoints } from '@/utility/functions'
 import * as Ably from 'ably'
 import Head from 'next/head'
 import store from 'store2'
+import { configureAbly } from '@ably-labs/react-hooks'
+import { ABLY_CHANNEL, ABLY_EVENTS, JUDGE_STORAGE_KEY, ROUND_MODE } from '@/utility/constants'
+import { getAnsweredPoints } from '@/utility/functions'
 
-import Alert from '@mui/material/Alert'
-import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
-import Card from '@mui/material/Card'
-import CardActions from '@mui/material/CardActions'
-import CardContent from '@mui/material/CardContent'
-import Checkbox from '@mui/material/Checkbox'
-import CloseIcon from '@mui/icons-material/Close'
+import { Alert, Box, Button, Stack, useMediaQuery, useTheme } from '@mui/material'
+import Answers from '@/components/judge/answers'
 import Container from '@mui/material/Container'
+import CreateGame from '@/components/judge/createGame'
 import Divider from '@mui/material/Divider'
-import Hidden from '@mui/material/Hidden'
-import List from '@mui/material/List'
-import ListItem from '@mui/material/ListItem'
-import ListItemButton from '@mui/material/ListItemButton'
-import ListItemIcon from '@mui/material/ListItemIcon'
-import ListItemText from '@mui/material/ListItemText'
-import Paper from '@mui/material/Paper'
-import Stack from '@mui/material/Stack'
+import GameRounds from '@/components/judge/gameRounds'
+import Grid from '@mui/material/Unstable_Grid2'
+import Question from '@/components/judge/question'
+import Strikes from '@/components/judge/strikes'
 import Typography from '@mui/material/Typography'
 
-import type { Game, Team, RoundQuestion } from '@/types/types'
-import CreateGame from '@/components/createGame'
-import { FormControlLabel, Switch } from '@mui/material'
+import type { Answer, Game, RoundQuestion, TeamName } from '@/types/types'
 
 const judgeCache = store.namespace(JUDGE_STORAGE_KEY)
 
-enum QUESTION_MODE {
-  ANSWERING = 'answering',
-  SHOWING = 'showing',
-}
-enum TEAM {
-  ONE = 'teamOne',
-  TWO = 'teamTwo',
-}
-enum MODE {
-  CREATE = 'create',
-  IN_ROUND = 'inRound',
-  WAITING = 'waiting',
-}
-
-function TeamScoreCard({
-  team,
-  onRoundWon,
-  disabled,
-  hasWinner,
-  isWinner,
-  onUndo,
-}: {
-  disabled?: boolean
-  hasWinner?: boolean
-  isWinner?: boolean
-  onRoundWon?: () => void
-  onUndo?: () => void
-  team: Team
-}) {
-  return (
-    <Card
-      sx={{
-        minWidth: {
-          xs: 275,
-          md: 400,
-        },
-      }}
-    >
-      <CardContent sx={{ pb: 0 }}>
-        <Typography gutterBottom variant='h5' component='div'>
-          Team {team.name} Score
-        </Typography>
-        <Box mx='auto' maxWidth={175}>
-          <Paper
-            variant='outlined'
-            sx={{
-              minHeight: 85,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <Typography variant='h1' component='div'>
-              {team.points}
-            </Typography>
-          </Paper>
-        </Box>
-      </CardContent>
-      <CardActions>
-        {!hasWinner && onRoundWon && (
-          <Button onClick={onRoundWon} variant='outlined' disabled={disabled} fullWidth>
-            Won Round
-          </Button>
-        )}
-        {hasWinner && isWinner && (
-          <Button onClick={onUndo} variant='outlined' disabled={disabled} fullWidth>
-            Undo Win
-          </Button>
-        )}
-      </CardActions>
-    </Card>
-  )
-}
-
-function JudgeQuestion({
-  question,
-  disabled,
-  onChange,
-  onCorrect,
-  mode = 'answering',
-}: {
-  question: RoundQuestion
-  disabled?: boolean
-  mode: 'answering' | 'showing'
-  onChange?: (question: RoundQuestion) => void
-  onCorrect?: (question: RoundQuestion) => void
-}) {
-  function toggelAnswered(index: number) {
-    return () => {
-      const answers = [...question.answers]
-      const oldShow = answers[index].showAnswer
-      const oldAnswered = answers[index].isAnswered
-      const nextShowAnswer = !oldShow
-      const nextIsAnswered = !oldAnswered
-      let didChange = true
-
-      if (mode === 'answering') {
-        answers[index].isAnswered = !nextShowAnswer ? false : nextIsAnswered
-        answers[index].showAnswer = nextShowAnswer
-        didChange = answers[index].showAnswer !== oldShow
-
-        if (didChange && nextShowAnswer && onCorrect) {
-          onCorrect({ ...question, answers })
-        } else if (didChange && onChange) {
-          onChange({ ...question, answers })
-        }
-      } else {
-        answers[index].showAnswer = true
-        didChange = answers[index].showAnswer !== oldShow
-
-        if (didChange && onChange) onChange({ ...question, answers })
-      }
-    }
-  }
-
-  return (
-    <Stack spacing={1}>
-      <Typography variant='h4' component='div' align='center'>
-        Possible Points
-      </Typography>
-      <Paper variant='outlined' sx={{ p: 1 }}>
-        <Typography variant='h4' component='div' align='center'>
-          {getAnsweredPoints(question)}
-        </Typography>
-      </Paper>
-      <Typography variant='h4' component='div' align='center'>
-        Active Question
-      </Typography>
-      <Paper variant='outlined' sx={{ p: 2 }}>
-        <Typography variant='h5' component='div'>
-          {question.text}
-        </Typography>
-      </Paper>
-      <Typography variant='h4' component='div' align='center'>
-        Answers
-      </Typography>
-      <Paper variant='outlined'>
-        <List dense disablePadding>
-          {question.answers.map((a, i) => (
-            <ListItem key={i} divider secondaryAction={a.points} disablePadding>
-              <ListItemButton disabled={disabled} onClick={toggelAnswered(i)}>
-                <ListItemIcon>
-                  <Checkbox checked={a.showAnswer} edge='start' tabIndex={-1} disableRipple />
-                </ListItemIcon>
-                <ListItemText>{a.text}</ListItemText>
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
-      </Paper>
-    </Stack>
-  )
-}
-
-function Winner({ game }: { game: Game }) {
-  const name =
-    game.teamOne.points > game.teamTwo.points
-      ? game.teamOne.name
-      : game.teamTwo.points > game.teamOne.points
-      ? game.teamTwo.name
-      : ''
-
-  return (
-    <Paper
-      sx={{
-        minHeight: 100,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        mt: 1,
-      }}
-    >
-      <Typography variant='h3' component='div'>
-        {name ? `Team ${name} Won` : 'Tie Game'}
-      </Typography>
-    </Paper>
-  )
-}
-
 export default function Judge() {
-  const [cachedGame, setCachedGame] = React.useState<Game>()
-  const [channel, setChannel] = React.useState<Ably.Types.RealtimeChannelPromise | null>(null)
-  const [disabledSoundEffects, setDisabledSoundEffects] = React.useState(false)
+  const theme = useTheme()
+  const isSmall = useMediaQuery(theme.breakpoints.down('md'))
+  const [channel, setChannel] = React.useState<Ably.Types.RealtimeChannelPromise | null>()
+  const [hasCachedGame, setHasCachedGame] = React.useState(false)
   const [game, setGame] = React.useState<Game>()
-  const [mode, setMode] = React.useState<MODE>(MODE.CREATE)
-  const [onDeckQuestion, setOnDeckQuestion] = React.useState<RoundQuestion>()
+  const [roundWinner, setRoundWinner] = React.useState<TeamName>()
   const [question, setQuestion] = React.useState<RoundQuestion>()
-  const [questionMode, setQuestionMode] = React.useState(QUESTION_MODE.ANSWERING)
-  const [roundWinner, setRoundWinner] = React.useState<TEAM>()
+  const [revealQuestion, setRevealQuestion] = React.useState(false)
+  const hasWinner = React.useMemo(() => {
+    return !!roundWinner
+  }, [roundWinner])
+  const handleQuestionSubscription = React.useCallback((message: Ably.Types.Message) => {
+    const newQuestion: RoundQuestion = message.data
 
-  const handleQuestionSubscription = React.useCallback(
-    (message: Ably.Types.Message) => {
-      const newQuestion: RoundQuestion = message.data
-
-      if (mode === MODE.IN_ROUND && question) {
-        setOnDeckQuestion(newQuestion)
-      } else if (mode === MODE.WAITING || !question) {
-        setOnDeckQuestion(undefined)
-        setQuestion(newQuestion)
-        setMode(MODE.IN_ROUND)
-      }
-    },
-    [mode, question],
-  )
-
-  function updateGame(game: Game, event?: ABLY_EVENTS) {
-    setGame(game)
-    judgeCache.set('game', game)
-
-    if (channel && event) {
-      channel.publish(event, game)
-    }
-  }
-
-  function removeCacheGame() {
-    setCachedGame(undefined)
-    judgeCache.remove('game')
-  }
-  function loadCacheGame() {
-    const newGame: Game = judgeCache.get('game')
-    setCachedGame(undefined)
-    setRoundWinner(undefined)
-
-    if (question) {
-      setMode(MODE.IN_ROUND)
-    } else {
-      setMode(MODE.WAITING)
-    }
-
-    updateGame(newGame, ABLY_EVENTS.GAME_CHANGE)
-  }
-  function handleDisabledSoundEffectChange(event: React.ChangeEvent<HTMLInputElement>) {
-    const { checked } = event.target
-
-    setDisabledSoundEffects(checked)
-  }
-  function handleRemoveStrike() {
-    if (game) {
-      const newGame: Game = { ...game, strikes: Math.max(game.strikes - 1, 0) }
-
-      if (newGame.strikes < 4) setQuestionMode(QUESTION_MODE.ANSWERING)
-
-      updateGame(newGame, ABLY_EVENTS.GAME_CHANGE)
-    }
-  }
-  function handleAddStrike() {
-    if (game) {
-      const newGame: Game = { ...game, strikes: Math.min(game.strikes + 1, 4) }
-
-      if (newGame.strikes === 4) setQuestionMode(QUESTION_MODE.SHOWING)
-
-      if (channel) {
-        if (questionMode === QUESTION_MODE.SHOWING || disabledSoundEffects) {
-          updateGame(newGame, ABLY_EVENTS.GAME_CHANGE)
-        } else {
-          updateGame(newGame, ABLY_EVENTS.WRONG_ANSWER)
-        }
-      }
-    }
-  }
-  function handleLoadOnDeckIntoCurrentRound() {
-    if (onDeckQuestion) {
-      const newQuestion = { ...onDeckQuestion }
-
-      setQuestion(newQuestion)
-      setOnDeckQuestion(undefined)
-
-      if (game) {
-        const newGame = { ...game, strikes: 0 }
-        setRoundWinner(undefined)
-        setQuestionMode(QUESTION_MODE.ANSWERING)
-
-        updateGame(newGame, ABLY_EVENTS.GAME_CHANGE)
-      }
-    }
-  }
-  function handleCreateNewGame(newGame: Game) {
-    setMode(question ? MODE.IN_ROUND : MODE.WAITING)
-    updateGame(newGame, ABLY_EVENTS.NEW_ROUND)
-  }
-  function handleQuestionChange(newQuestion: RoundQuestion) {
     setQuestion(newQuestion)
+  }, [])
+  const layout = React.useMemo(() => {
+    // No Game Present
+    if (!game) {
+      return <CreateGame onCreate={handleCreateNewGame} />
+    }
 
-    if (channel) channel.publish(ABLY_EVENTS.QUESTION_CHANGE, newQuestion)
-  }
-  function handleCorrectAnswer(newQuestion: RoundQuestion) {
-    setQuestion(newQuestion)
-
-    if (game?.strikes === 3) setQuestionMode(QUESTION_MODE.SHOWING)
-
-    if (channel)
-      channel.publish(
-        disabledSoundEffects ? ABLY_EVENTS.QUESTION_CHANGE : ABLY_EVENTS.CORRECT_ANSWER,
-        newQuestion,
+    if (!question) {
+      return isSmall ? (
+        <Stack spacing={1}>
+          <Alert severity='info'>
+            Round will start soon. Waiting for a question to be published.
+          </Alert>
+          <Strikes strikes={game.strikes} disabled />
+          <GameRounds game={game} roundMode={ROUND_MODE.NONE} disabled />
+        </Stack>
+      ) : (
+        <Grid container spacing={1}>
+          <Grid xs={6}>
+            <Stack spacing={1}>
+              <Alert severity='info'>
+                Round will start soon. Waiting for a question to be published.
+              </Alert>
+            </Stack>
+          </Grid>
+          <Grid xs={6}>
+            <Stack spacing={1}>
+              <Strikes strikes={game.strikes} disabled />
+              <GameRounds game={game} roundMode={ROUND_MODE.NONE} disabled />
+            </Stack>
+          </Grid>
+        </Grid>
       )
+    }
+
+    // Have game and question
+
+    return isSmall ? (
+      <Stack spacing={1}>
+        <Question question={question.text} onVisibilityChange={handleQuestionVisibilityChange} />
+        <Strikes strikes={game.strikes} onChange={handleStrikeChange} />
+        <Answers
+          answers={question.answers}
+          roundMode={question.roundMode}
+          reveal={revealQuestion || game.strikes === 4}
+          onRevealChange={handleRevealChange}
+          onChange={handleAnswerChange}
+        />
+        <GameRounds
+          game={game}
+          roundMode={question.roundMode}
+          winner={roundWinner}
+          onWinner={handleOnWinner}
+          onUndoWinner={handleOnUndoWinner}
+          onRoundChange={handleOnRoundChange}
+        />
+      </Stack>
+    ) : (
+      <Grid container spacing={1}>
+        <Grid xs={6}>
+          <Stack spacing={1}>
+            <Question
+              question={question.text}
+              onVisibilityChange={handleQuestionVisibilityChange}
+            />
+            <Answers
+              answers={question.answers}
+              roundMode={question.roundMode}
+              reveal={revealQuestion || game.strikes === 4 || hasWinner}
+              onRevealChange={handleRevealChange}
+              onChange={handleAnswerChange}
+            />
+          </Stack>
+        </Grid>
+        <Grid xs={6}>
+          <Stack spacing={1}>
+            <Strikes strikes={game.strikes} onChange={handleStrikeChange} />
+            <GameRounds
+              game={game}
+              roundMode={question.roundMode}
+              winner={roundWinner}
+              onWinner={handleOnWinner}
+              onUndoWinner={handleOnUndoWinner}
+              onRoundChange={handleOnRoundChange}
+            />
+          </Stack>
+        </Grid>
+      </Grid>
+    )
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [question, game, isSmall, roundWinner])
+
+  function handleRevealChange(newReveal: boolean) {
+    setRevealQuestion(newReveal)
   }
-  function handleTeamOneWon() {
-    if (!game) return
-    const roundPoints = getAnsweredPoints(question)
-    const teamOne = { ...game.teamOne }
+  function handleOnWinner(teamName: TeamName) {
+    if (game && question) {
+      const points = getAnsweredPoints(question.answers, question.roundMode)
+      const team = game[teamName]
 
-    teamOne.points += roundPoints
+      team.points += points
 
-    updateGame({ ...game, teamOne })
-    setRoundWinner(TEAM.ONE)
+      const newGame = { ...game, [teamName]: { ...team } }
+
+      setGame(newGame)
+      setRoundWinner(teamName)
+    }
   }
-  function handleTeamTwoWon() {
-    if (!game) return
-    const roundPoints = getAnsweredPoints(question)
-    const teamTwo = { ...game.teamTwo }
+  function handleOnUndoWinner(teamName: TeamName) {
+    if (game && question) {
+      const points = getAnsweredPoints(question.answers, question.roundMode)
+      const team = game[teamName]
 
-    teamTwo.points += roundPoints
+      team.points -= points
 
-    updateGame({ ...game, teamTwo })
-    setRoundWinner(TEAM.TWO)
-  }
-  function handleRoundUndo(team: TEAM) {
-    return () => {
-      if (!game) return
-      const points = game[team].points - getAnsweredPoints(question)
+      const newGame = { ...game, [teamName]: { ...team } }
 
-      updateGame({ ...game, [team]: { ...game[team], points } })
+      setGame(newGame)
       setRoundWinner(undefined)
     }
   }
-  function handelNextRound() {
-    if (!game) return
-    const newGame = { ...game, roundsPlayed: game.roundsPlayed + 1, strikes: 0 }
-
+  function resetRound() {
+    setRevealQuestion(false)
+    setQuestion(undefined)
     setRoundWinner(undefined)
+  }
+  function handleCreateNewGame(newGame: Game) {
+    updateGame(newGame, true)
+    resetRound()
+  }
+  function handleLoadCacheGame() {
+    const newGame = judgeCache.get('game') as Game
 
-    if (onDeckQuestion) {
-      setQuestion(onDeckQuestion)
-      setOnDeckQuestion(undefined)
-      setMode(MODE.IN_ROUND)
-    } else {
-      setQuestion(undefined)
-      setOnDeckQuestion(undefined)
-      setMode(MODE.WAITING)
+    if (newGame) {
+      updateGame(newGame, true)
+      setHasCachedGame(false)
     }
-    setQuestionMode(QUESTION_MODE.ANSWERING)
+  }
+  function handleDismissCachedGame() {
+    judgeCache.remove('game')
+    setHasCachedGame(false)
+    resetRound()
+  }
+  function updateGame(newGame: Game, publish?: boolean) {
+    setGame(newGame)
+    judgeCache.set('game', newGame)
 
-    updateGame(newGame, ABLY_EVENTS.NEW_ROUND)
+    if (publish && channel) {
+      channel.publish(ABLY_EVENTS.GAME_CHANGE, newGame)
+    }
   }
-  function handleShowQuesitonOnBoard() {
-    if (channel) channel.publish(ABLY_EVENTS.SHOW_QUESTION, { show: true })
+  function handleAnswerChange(answers: Answer[]) {
+    if (question) {
+      const newQuestion = { ...question, answers }
+      setQuestion(newQuestion)
+
+      if (channel)
+        channel.publish(
+          revealQuestion ? ABLY_EVENTS.QUESTION_CHANGE : ABLY_EVENTS.CORRECT_ANSWER,
+          newQuestion,
+        )
+    }
   }
-  function handleHideQuesitonOnBoard() {
-    if (channel) channel.publish(ABLY_EVENTS.SHOW_QUESTION, { show: false })
+  function handleStrikeChange(strikes: number, animate: boolean) {
+    if (game) {
+      const newGame = { ...game, strikes }
+      updateGame(newGame, !animate)
+
+      if (animate) {
+        if (channel) channel.publish(ABLY_EVENTS.WRONG_ANSWER, newGame)
+      }
+    }
+  }
+  function handleOnRoundChange() {
+    if (game) {
+      const nextRound = game.roundsPlayed + 1
+
+      if (game.totalRounds === nextRound) {
+        judgeCache.remove('game')
+        setGame(undefined)
+        resetRound()
+      } else {
+        const newGame = { ...game, roundsPlayed: nextRound, strikes: 0 }
+
+        if (channel) channel.publish(ABLY_EVENTS.NEW_ROUND, newGame)
+        updateGame(newGame)
+        resetRound()
+      }
+    }
+  }
+  function handleQuestionVisibilityChange(isVisible: boolean) {
+    if (channel) channel.publish(ABLY_EVENTS.SHOW_QUESTION, { show: isVisible })
   }
 
   React.useEffect(() => {
@@ -388,12 +237,12 @@ export default function Judge() {
       authUrl: '/api/authentication/token-auth',
     })
     const _channel = ably.channels.get(ABLY_CHANNEL)
-    const gameFromCache: Game = judgeCache.get('game')
 
-    _channel.subscribe(ABLY_EVENTS.QUESTION_CHANGE, handleQuestionSubscription)
+    _channel.subscribe(ABLY_EVENTS.PUBLISH_QUESITON, handleQuestionSubscription)
+
     setChannel(_channel)
 
-    if (gameFromCache) setCachedGame(gameFromCache)
+    setHasCachedGame(!!judgeCache.get('game'))
 
     return () => {
       _channel.unsubscribe()
@@ -409,211 +258,24 @@ export default function Judge() {
         <meta name='viewport' content='width=device-width, initial-scale=1' />
         <link rel='icon' href='/favicon.ico' />
       </Head>
-      <Container maxWidth='xl' sx={{ pb: 2 }}>
-        <Typography variant='h1' align='center'>
+      <Container maxWidth='xl' sx={{ pt: 1, pb: 2, minWidth: 300 }}>
+        <Typography variant='h3' align='center'>
           Judge
         </Typography>
-        <Divider sx={{ mt: 1 }} />
-        {mode !== MODE.CREATE && game && (
-          <React.Fragment>
-            {game.roundsPlayed < game.totalRounds ? (
-              <Stack spacing={1}>
-                {onDeckQuestion && (
-                  <Alert severity='info'>
-                    <Typography>
-                      A new question was recieved from the host. Please proceed to the next round to
-                      load it.
-                    </Typography>
-                    <Typography variant='caption'>
-                      Or click the button below to load it in the current round. This action will
-                      reset the current round.
-                    </Typography>
-                    <Box>
-                      <Button fullWidth onClick={handleLoadOnDeckIntoCurrentRound}>
-                        Load Now
-                      </Button>
-                    </Box>
-                  </Alert>
-                )}
-                <Paper sx={{ mt: 1, p: 1 }}>
-                  <Typography variant='h4' component='div' align='center'>
-                    Round {game.roundsPlayed + 1} of {game.totalRounds}
-                  </Typography>
-                  <Divider sx={{ my: 1 }} />
-                  <Box display='flex' justifyContent='center'>
-                    <Button variant='outlined' onClick={handelNextRound} fullWidth>
-                      Next Round
-                    </Button>
-                  </Box>
-                </Paper>
-                <Box>
-                  <Hidden smDown>
-                    <Box display='flex' justifyContent='space-evenly'>
-                      <TeamScoreCard
-                        team={game.teamOne}
-                        onRoundWon={mode !== MODE.WAITING ? handleTeamOneWon : undefined}
-                        hasWinner={!!roundWinner}
-                        isWinner={roundWinner === TEAM.ONE}
-                        onUndo={handleRoundUndo(TEAM.ONE)}
-                      />
-                      <TeamScoreCard
-                        team={game.teamTwo}
-                        onRoundWon={mode !== MODE.WAITING ? handleTeamTwoWon : undefined}
-                        hasWinner={!!roundWinner}
-                        isWinner={roundWinner === TEAM.TWO}
-                        onUndo={handleRoundUndo(TEAM.TWO)}
-                      />
-                    </Box>
-                  </Hidden>
-                  <Hidden smUp>
-                    <Stack spacing={1}>
-                      <TeamScoreCard
-                        team={game.teamOne}
-                        onRoundWon={mode !== MODE.WAITING ? handleTeamOneWon : undefined}
-                        hasWinner={!!roundWinner}
-                        isWinner={roundWinner === TEAM.ONE}
-                        onUndo={handleRoundUndo(TEAM.ONE)}
-                      />
-                      <TeamScoreCard
-                        team={game.teamTwo}
-                        onRoundWon={mode !== MODE.WAITING ? handleTeamTwoWon : undefined}
-                        hasWinner={!!roundWinner}
-                        isWinner={roundWinner === TEAM.TWO}
-                        onUndo={handleRoundUndo(TEAM.TWO)}
-                      />
-                    </Stack>
-                  </Hidden>
-                </Box>
-                <Divider />
-                {question ? (
-                  <Paper sx={{ p: 1 }}>
-                    <JudgeQuestion
-                      question={question}
-                      onCorrect={handleCorrectAnswer}
-                      onChange={handleQuestionChange}
-                      mode={questionMode}
-                    />
-                    <Divider sx={{ my: 1 }} />
-                    <Box display='flex' justifyContent='space-between'>
-                      <Button
-                        disabled={game.strikes <= 0}
-                        variant='outlined'
-                        onClick={handleRemoveStrike}
-                      >
-                        Remove
-                      </Button>
-                      <Box display='flex' alignItems='center' gap={0.5}>
-                        <CloseIcon
-                          sx={{
-                            color: game.strikes >= 1 ? '#d32f2f' : '#424242',
-                            border: `1px solid ${game.strikes >= 1 ? '#d32f2f' : '#424242'}`,
-                            borderRadius: '2px',
-                            fontSize: {
-                              xs: 20,
-                              sm: 35,
-                            },
-                          }}
-                        />
-                        <CloseIcon
-                          sx={{
-                            color: game.strikes >= 2 ? '#d32f2f' : '#424242',
-                            border: `1px solid ${game.strikes >= 2 ? '#d32f2f' : '#424242'}`,
-                            borderRadius: '2px',
-                            fontSize: {
-                              xs: 20,
-                              sm: 35,
-                            },
-                          }}
-                        />
-                        <CloseIcon
-                          sx={{
-                            color: game.strikes >= 3 ? '#d32f2f' : '#424242',
-                            border: `1px solid ${game.strikes >= 3 ? '#d32f2f' : '#424242'}`,
-                            borderRadius: '2px',
-                            fontSize: {
-                              xs: 20,
-                              sm: 35,
-                            },
-                          }}
-                        />
-                        <CloseIcon
-                          sx={{
-                            color: game.strikes >= 4 ? '#d32f2f' : '#424242',
-                            border: `1px solid ${game.strikes >= 4 ? '#d32f2f' : '#424242'}`,
-                            borderRadius: '2px',
-                            fontSize: {
-                              xs: 20,
-                              sm: 35,
-                            },
-                          }}
-                        />
-                      </Box>
-                      <Button
-                        disabled={game.strikes >= 4}
-                        color='error'
-                        variant='outlined'
-                        onClick={handleAddStrike}
-                      >
-                        Add
-                      </Button>
-                    </Box>
-                    <Box pt={1}>
-                      <Button onClick={handleShowQuesitonOnBoard} fullWidth>
-                        Show Question on Board
-                      </Button>
-                    </Box>
-                    <Box pt={1}>
-                      <Button onClick={handleHideQuesitonOnBoard} fullWidth>
-                        Hide Question on Board
-                      </Button>
-                    </Box>
-                    <Box pt={1}>
-                      <FormControlLabel
-                        control={
-                          <Switch
-                            checked={disabledSoundEffects}
-                            onChange={handleDisabledSoundEffectChange}
-                          />
-                        }
-                        label='Disabled Sound Effects'
-                      />
-                    </Box>
-                  </Paper>
-                ) : (
-                  <Box>
-                    <Typography variant='h5' component='div'>
-                      Waiting for the next Question
-                    </Typography>
-                  </Box>
-                )}
-              </Stack>
-            ) : (
-              <Winner game={game} />
-            )}
-          </React.Fragment>
+        <Divider sx={{ my: 1 }} />
+        {hasCachedGame && (
+          <Alert severity='warning' sx={{ '& .MuiAlert-message': { width: '100%' } }}>
+            There seems to be a cached game that was not completed. Would you like to load or
+            dismiss it?
+            <Box width='100%' display='flex' justifyContent='flex-end'>
+              <Button color='error' onClick={handleDismissCachedGame}>
+                Dismiss
+              </Button>
+              <Button onClick={handleLoadCacheGame}>Load</Button>
+            </Box>
+          </Alert>
         )}
-        {(mode === MODE.CREATE || !game) && (
-          <Stack>
-            {cachedGame && (
-              <Alert severity='warning' sx={{ mt: 1 }}>
-                <Typography paragraph>
-                  There seems to be a cached game. This may be the result of the browser closing
-                  accidently.
-                </Typography>
-                <Typography>Would you like to load the previous game from the cache?</Typography>
-                <Box display='flex'>
-                  <Box flexGrow={1} />
-                  <Button onClick={removeCacheGame}>No</Button>
-                  <Button onClick={loadCacheGame}>Yes</Button>
-                </Box>
-              </Alert>
-            )}
-            <CreateGame
-              onExit={game ? () => setMode(MODE.IN_ROUND) : undefined}
-              onCreate={handleCreateNewGame}
-            />
-          </Stack>
-        )}
+        {layout}
       </Container>
     </React.Fragment>
   )

@@ -1,3 +1,9 @@
+export type ListQuestion = {
+  showAnswers?: boolean
+  selected?: boolean
+  active?: boolean
+} & Question
+
 export type RoundQuestion = {
   roundMode: ROUND_MODE
 } & Question
@@ -12,6 +18,8 @@ export type Question = {
   text: string
   answers: Answer[]
 }
+
+export type TeamName = 'teamOne' | 'teamTwo'
 
 export type Team = {
   name: string

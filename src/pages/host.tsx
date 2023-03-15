@@ -1,39 +1,19 @@
 import * as React from 'react'
 import { configureAbly } from '@ably-labs/react-hooks'
-import { ABLY_CHANNEL, ABLY_EVENTS, HOST_STORAGE_KEY } from '@/utility/constants'
+import { ABLY_CHANNEL, ABLY_EVENTS } from '@/utility/constants'
 import * as Ably from 'ably'
 import Head from 'next/head'
-import store from 'store2'
 
-import { Box, Container, Typography, Divider, Alert, AlertTitle, Button } from '@mui/material'
-import QuestionPicker from '@/components/questionPicker'
-
+import { Container, Typography, Divider, Button, Paper, Stack } from '@mui/material'
+import PlayArrowIcon from '@mui/icons-material/PlayArrow'
+import StopIcon from '@mui/icons-material/Stop'
 import type { RoundQuestion } from '@/types/types'
 import QuestionViewer from '@/components/questionViewer'
 
-const hostCache = store.namespace(HOST_STORAGE_KEY)
-
 export default function Host() {
   const [channel, setChannel] = React.useState<Ably.Types.RealtimeChannelPromise | null>(null)
-  const [cacheQuestion, setCacheQuestion] = React.useState<RoundQuestion>()
   const [activeQuestion, setActiveQuestion] = React.useState<RoundQuestion>()
 
-  function handleDiscardCacheQuestion() {
-    setCacheQuestion(undefined)
-    hostCache.remove('question')
-  }
-  function handleQuestionSelect(question: RoundQuestion) {
-    hostCache.set('question', question)
-    setCacheQuestion(undefined)
-    setActiveQuestion(question)
-
-    publishQuestion(question)
-  }
-  function publishQuestion(quesiton: RoundQuestion) {
-    if (channel) {
-      channel.publish(ABLY_EVENTS.QUESTION_CHANGE, quesiton)
-    }
-  }
   function playThemeSong() {
     if (channel) {
       channel.publish(ABLY_EVENTS.PLAY_THEME, { play: true })
@@ -50,11 +30,14 @@ export default function Host() {
       authUrl: '/api/authentication/token-auth',
     })
     const _channel = ably.channels.get(ABLY_CHANNEL)
-    const question = hostCache.get('question')
+    _channel.subscribe(ABLY_EVENTS.PUBLISH_QUESITON, (message: Ably.Types.Message) => {
+      const newQuestion: RoundQuestion = message.data
 
-    if (question) {
-      setCacheQuestion(question)
-    }
+      setActiveQuestion(newQuestion)
+    })
+    _channel.subscribe(ABLY_EVENTS.NEW_ROUND, () => {
+      setActiveQuestion(undefined)
+    })
 
     setChannel(_channel)
     return () => {
@@ -80,36 +63,37 @@ export default function Host() {
           pt: 2,
         }}
       >
-        {!activeQuestion && (
-          <React.Fragment>
-            <Typography variant='h1' align='center'>
-              Host
-            </Typography>
-            <Divider sx={{ mb: 1 }} />
-          </React.Fragment>
-        )}
-        {!activeQuestion && cacheQuestion && (
-          <Alert severity='warning' sx={{ '& .MuiAlert-message': { flexGrow: 1 } }}>
-            <AlertTitle>Previous Quesiton Detected</AlertTitle>
-            <Typography variant='caption'>{cacheQuestion.text}</Typography>
-            <Box display='flex' justifyContent='space-between'>
-              <Button onClick={handleDiscardCacheQuestion}>Discard</Button>
-              <Button onClick={() => handleQuestionSelect(cacheQuestion)}>Load</Button>
-            </Box>
-          </Alert>
-        )}
-        {activeQuestion && (
-          <QuestionViewer
-            question={activeQuestion}
-            onPublishQuestion={publishQuestion}
-            onPlayTheme={playThemeSong}
-            onStopTheme={stopThemeSong}
-            onExit={() => {
-              setActiveQuestion(undefined)
-            }}
-          />
-        )}
-        {!activeQuestion && <QuestionPicker onQuestionSelect={handleQuestionSelect} />}
+        <Stack spacing={1}>
+          {!activeQuestion && (
+            <React.Fragment>
+              <Typography variant='h3' align='center'>
+                Host
+              </Typography>
+              <Divider />
+            </React.Fragment>
+          )}
+          {activeQuestion && <QuestionViewer question={activeQuestion} />}
+          {!activeQuestion && (
+            <Paper sx={{ p: 1 }}>
+              <Typography variant='h5' align='center'>
+                Waiting for a question to be published
+              </Typography>
+            </Paper>
+          )}
+          <Paper sx={{ p: 1, display: 'flex', gap: 1 }}>
+            <Button startIcon={<StopIcon />} onClick={stopThemeSong} variant='outlined' fullWidth>
+              Stop Theme Song
+            </Button>
+            <Button
+              startIcon={<PlayArrowIcon />}
+              onClick={playThemeSong}
+              variant='outlined'
+              fullWidth
+            >
+              Play Theme Song
+            </Button>
+          </Paper>
+        </Stack>
       </Container>
     </React.Fragment>
   )

@@ -98,13 +98,16 @@ export default function BoardView() {
 
       setGame(newGame)
     })
-    _channel.subscribe(ABLY_EVENTS.QUESTION_CHANGE, (message: Ably.Types.Message) => {
-      const newQuestion: RoundQuestion = message.data
+    _channel.subscribe(
+      [ABLY_EVENTS.QUESTION_CHANGE, ABLY_EVENTS.PUBLISH_QUESITON],
+      (message: Ably.Types.Message) => {
+        const newQuestion: RoundQuestion = message.data
 
-      setQuestion(newQuestion)
-      if (newQuestion) hideTeamScores()
-      stopThemeMusic()
-    })
+        setQuestion(newQuestion)
+        if (newQuestion) hideTeamScores()
+        stopThemeMusic()
+      },
+    )
     _channel.subscribe(ABLY_EVENTS.WRONG_ANSWER, (message: Ably.Types.Message) => {
       const newGame: Game = message.data
 
@@ -121,7 +124,6 @@ export default function BoardView() {
       setGame(newGame)
       setQuestion(undefined)
       showTeamScores()
-      playThemeMusic(true)
     })
     _channel.subscribe(ABLY_EVENTS.SHOW_QUESTION, (message: Ably.Types.Message) => {
       const { show: newShowQuestion }: { show: boolean } = message.data
@@ -131,11 +133,7 @@ export default function BoardView() {
     _channel.subscribe(ABLY_EVENTS.PLAY_THEME, (message: Ably.Types.Message) => {
       const { play: shouldPlayTheme }: { play: boolean } = message.data
 
-      if (shouldPlayTheme) {
-        playThemeMusic()
-      } else {
-        stopThemeMusic()
-      }
+      shouldPlayTheme ? playThemeMusic() : stopThemeMusic()
     })
 
     window.addEventListener('resize', handleResizeEvent)
