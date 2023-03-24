@@ -11,8 +11,9 @@ import Answers from '@/components/judge/answers'
 import Container from '@mui/material/Container'
 import CreateGame from '@/components/judge/createGame'
 import Divider from '@mui/material/Divider'
-import GameRounds from '@/components/judge/gameRounds'
+import GameRounds, { getRoundText } from '@/components/judge/gameRounds'
 import Grid from '@mui/material/Unstable_Grid2'
+import Paper from '@mui/material/Paper'
 import Question from '@/components/judge/question'
 import Strikes from '@/components/judge/strikes'
 import Typography from '@mui/material/Typography'
@@ -76,6 +77,12 @@ export default function Judge() {
 
     return isSmall ? (
       <Stack spacing={1}>
+        <Paper sx={{ px: 2, py: 1, display: 'flex', justifyContent: 'space-between' }}>
+          <Typography>{getRoundText(question.roundMode)}</Typography>
+          <Typography>
+            {game.roundsPlayed + 1} of {game.totalRounds}
+          </Typography>
+        </Paper>
         <Question question={question.text} onVisibilityChange={handleQuestionVisibilityChange} />
         <Strikes strikes={game.strikes} onChange={handleStrikeChange} />
         <Answers

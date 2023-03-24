@@ -1,10 +1,10 @@
 import * as React from 'react'
 import { configureAbly } from '@ably-labs/react-hooks'
-import { ABLY_CHANNEL, ABLY_EVENTS } from '@/utility/constants'
+import { ABLY_CHANNEL, ABLY_EVENTS, MUSIC } from '@/utility/constants'
 import * as Ably from 'ably'
 import Head from 'next/head'
 
-import { Container, Typography, Divider, Button, Paper, Stack } from '@mui/material'
+import { Container, Typography, Divider, Button, Paper, Stack, Grid } from '@mui/material'
 import PlayArrowIcon from '@mui/icons-material/PlayArrow'
 import StopIcon from '@mui/icons-material/Stop'
 import type { RoundQuestion } from '@/types/types'
@@ -16,12 +16,12 @@ export default function Host() {
 
   function playThemeSong() {
     if (channel) {
-      channel.publish(ABLY_EVENTS.PLAY_THEME, { play: true })
+      channel.publish(ABLY_EVENTS.PLAY_MUSIC, { music: MUSIC.THEME })
     }
   }
   function stopThemeSong() {
     if (channel) {
-      channel.publish(ABLY_EVENTS.PLAY_THEME, { play: false })
+      channel.publish(ABLY_EVENTS.STOP_MUSIC, {})
     }
   }
 
@@ -80,19 +80,24 @@ export default function Host() {
               </Typography>
             </Paper>
           )}
-          <Paper sx={{ p: 1, display: 'flex', gap: 1 }}>
-            <Button startIcon={<StopIcon />} onClick={stopThemeSong} variant='outlined' fullWidth>
-              Stop Theme Song
-            </Button>
-            <Button
-              startIcon={<PlayArrowIcon />}
-              onClick={playThemeSong}
-              variant='outlined'
-              fullWidth
-            >
-              Play Theme Song
-            </Button>
-          </Paper>
+
+          <Grid container spacing={1}>
+            <Grid item xs={12} sm={6}>
+              <Button
+                startIcon={<PlayArrowIcon />}
+                onClick={playThemeSong}
+                variant='outlined'
+                fullWidth
+              >
+                Play Theme Song
+              </Button>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Button startIcon={<StopIcon />} onClick={stopThemeSong} variant='outlined' fullWidth>
+                Stop Theme Song
+              </Button>
+            </Grid>
+          </Grid>
         </Stack>
       </Container>
     </React.Fragment>

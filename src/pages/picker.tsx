@@ -1,5 +1,8 @@
 import * as React from 'react'
+import * as Ably from 'ably'
 import Head from 'next/head'
+import { configureAbly } from '@ably-labs/react-hooks'
+import { ABLY_CHANNEL, ABLY_EVENTS, MUSIC, ROUND_MODE } from '@/utility/constants'
 
 import {
   Alert,
@@ -16,14 +19,15 @@ import {
   Zoom,
   useMediaQuery,
   useTheme,
+  LinearProgress,
+  Grid,
 } from '@mui/material'
 import QuestionList from '@/components/questionList'
 import QuestionCart from '@/components/questionCart'
-
 import AddIcon from '@mui/icons-material/Add'
-
-import { ListQuestion, Question } from '@/types/types'
 import Pagination from '@mui/material/Pagination'
+
+import type { ListQuestion, Question } from '@/types/types'
 
 enum PICKER_MODE {
   BY_TERM = 'term',
@@ -56,6 +60,7 @@ const ENDPOINT = '/api/questions'
 export default function Picker() {
   const theme = useTheme()
   const isSmall = useMediaQuery(theme.breakpoints.down('md'))
+  const [channel, setChannel] = React.useState<Ably.Types.RealtimeChannelPromise>()
   const [mode, setMode] = React.useState(PICKER_MODE.BY_ANSWERS)
   const [view, setView] = React.useState(PICKER_VIEW.SEARCH)
   const [page, setPage] = React.useState(1)
@@ -175,7 +180,6 @@ export default function Picker() {
     const newCart = [...cartQuestions]
 
     newCart.splice(index, 1)
-
     setCartQuestions(newCart)
 
     if (newCart.length === 0) setView(PICKER_VIEW.SEARCH)
@@ -183,6 +187,19 @@ export default function Picker() {
   function handlePageChange(event: React.ChangeEvent<unknown>, newPage: number) {
     setPage(newPage)
     handleGetQuestions({ page: `${newPage}` })
+  }
+
+  function handlePlayMusic(music: MUSIC) {
+    return () => {
+      if (channel) {
+        channel.publish(ABLY_EVENTS.PLAY_MUSIC, { music })
+      }
+    }
+  }
+  function handleStopMusic() {
+    if (channel) {
+      channel.publish(ABLY_EVENTS.STOP_MUSIC, {})
+    }
   }
 
   async function fetchQuestions(query: { [key: string]: string }) {
@@ -197,11 +214,20 @@ export default function Picker() {
       const response = await fetch(url)
       const data: Question[] = await response.json()
 
-      setQuesitonPool(data)
+      setQuesitonPool(data.map((q) => ({ ...q, roundMode: ROUND_MODE.NORMAL })))
     } finally {
       setFetching(false)
     }
   }
+
+  React.useEffect(() => {
+    const ably: Ably.Types.RealtimePromise = configureAbly({
+      authUrl: '/api/authentication/token-auth',
+    })
+    setChannel(ably.channels.get(ABLY_CHANNEL))
+  }, [])
+
+  if (!channel) return null
 
   return (
     <React.Fragment>
@@ -313,13 +339,52 @@ export default function Picker() {
             </React.Fragment>
           ) : (
             <Paper sx={{ p: 1 }}>
-              <Button onClick={handleToggleView} variant='outlined' fullWidth>
-                Search for Questions
-              </Button>
+              <Stack spacing={1}>
+                <Grid container spacing={1}>
+                  <Grid item xs={12} sm={6} md={3}>
+                    <Button
+                      onClick={handlePlayMusic(MUSIC.GUNSMOKE_OPEN)}
+                      variant='outlined'
+                      fullWidth
+                    >
+                      Play Gunsmoke Theme
+                    </Button>
+                  </Grid>
+                  <Grid item xs={12} sm={6} md={3}>
+                    <Button
+                      onClick={handlePlayMusic(MUSIC.GUNSMOKE_END)}
+                      variant='outlined'
+                      fullWidth
+                    >
+                      Play Gunsmoke Closing Theme
+                    </Button>
+                  </Grid>
+                  <Grid item xs={12} sm={6} md={3}>
+                    <Button
+                      onClick={handlePlayMusic(MUSIC.GUNSMOKE_NEXT)}
+                      variant='outlined'
+                      fullWidth
+                    >
+                      Play Gunsmoke Stay Tuned
+                    </Button>
+                  </Grid>
+                  <Grid item xs={12} sm={6} md={3}>
+                    <Button onClick={handleStopMusic} variant='outlined' fullWidth>
+                      Stop Music
+                    </Button>
+                  </Grid>
+                </Grid>
+
+                <Button onClick={handleToggleView} variant='outlined' fullWidth>
+                  Search for Questions
+                </Button>
+              </Stack>
             </Paper>
           )}
 
-          {view === PICKER_VIEW.SEARCH && questionPool ? (
+          {fetching ? (
+            <LinearProgress />
+          ) : view === PICKER_VIEW.SEARCH && questionPool ? (
             <React.Fragment>
               <Paper>
                 {questionPool.length === 0 && (
@@ -344,12 +409,15 @@ export default function Picker() {
                 </Box>
               )}
             </React.Fragment>
-          ) : (
+          ) : view === PICKER_VIEW.CART ? (
             <QuestionCart
+              channel={channel}
               questions={cartQuestions}
               onPublish={handlePublishCartQuestion}
               onRemove={handleRemoveCartQuestion}
             />
+          ) : (
+            <div>Please use the controls above to find quesitons</div>
           )}
         </Stack>
         <Zoom in={hasSelectedPoolQuestion}>

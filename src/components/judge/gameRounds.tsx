@@ -15,6 +15,17 @@ interface GameRoundProps {
   onRoundChange?: () => void
 }
 
+export function getRoundText(mode?: ROUND_MODE) {
+  switch (mode) {
+    case ROUND_MODE.DOUBLE:
+      return 'Round (Double Points)'
+    case ROUND_MODE.TRIPLE:
+      return 'Round (Triple Points)'
+    default:
+      return 'Round'
+  }
+}
+
 export default function GameRounds({
   game,
   disabled,
@@ -25,14 +36,7 @@ export default function GameRounds({
   onRoundChange,
 }: GameRoundProps) {
   const roundText = React.useMemo(() => {
-    switch (roundMode) {
-      case ROUND_MODE.DOUBLE:
-        return 'Round (Double Points)'
-      case ROUND_MODE.TRIPLE:
-        return 'Round (Triple Points)'
-      default:
-        return 'Round'
-    }
+    return getRoundText(roundMode)
   }, [roundMode])
 
   function handleUndo(team: TeamName) {

@@ -2,7 +2,7 @@ export type ListQuestion = {
   showAnswers?: boolean
   selected?: boolean
   active?: boolean
-} & Question
+} & RoundQuestion
 
 export type RoundQuestion = {
   roundMode: ROUND_MODE

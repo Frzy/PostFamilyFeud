@@ -33,64 +33,73 @@ export default function Strikes({ strikes = 0, disabled, onChange }: StrikeProps
   return (
     <Paper sx={{ p: 1 }}>
       <Stack spacing={1}>
-        <Paper variant='outlined' sx={{ p: 1 }}>
-          <Box display='flex'>
-            <Typography color={disabled ? 'text.disabled' : undefined} sx={{ flexGrow: 1 }}>
-              Strikes
-            </Typography>
-            <Box display='flex' gap={1} height={25}>
-              <CloseIcon
-                sx={{
-                  color: strikes > 0 ? activeColor : notActiveColor,
-                  border: `1px solid ${strikes > 0 ? activeColor : notActiveColor}`,
-                  borderRadius: 1,
-                  fontSize: 25,
-                }}
-              />
-              <CloseIcon
-                sx={{
-                  color: strikes > 1 ? activeColor : notActiveColor,
-                  border: `1px solid ${strikes > 1 ? activeColor : notActiveColor}`,
-                  borderRadius: 1,
-                  fontSize: 25,
-                }}
-              />
-              <CloseIcon
-                sx={{
-                  color: strikes > 2 ? activeColor : notActiveColor,
-                  border: `1px solid ${strikes > 2 ? activeColor : notActiveColor}`,
-                  borderRadius: 1,
-                  fontSize: 25,
-                }}
-              />
-            </Box>
+        <Box display='flex' flexDirection='row' gap={0.5}>
+          <Box flexGrow={1}>
+            <Paper variant='outlined' sx={{ p: 1 }}>
+              <Box display='flex'>
+                <Typography color={disabled ? 'text.disabled' : undefined} sx={{ flexGrow: 1 }}>
+                  Strikes
+                </Typography>
+                <Box display='flex' gap={1} height={25}>
+                  <CloseIcon
+                    sx={{
+                      color: strikes > 0 ? activeColor : notActiveColor,
+                      border: `1px solid ${strikes > 0 ? activeColor : notActiveColor}`,
+                      borderRadius: 1,
+                      fontSize: 25,
+                    }}
+                  />
+                  <CloseIcon
+                    sx={{
+                      color: strikes > 1 ? activeColor : notActiveColor,
+                      border: `1px solid ${strikes > 1 ? activeColor : notActiveColor}`,
+                      borderRadius: 1,
+                      fontSize: 25,
+                    }}
+                  />
+                  <CloseIcon
+                    sx={{
+                      color: strikes > 2 ? activeColor : notActiveColor,
+                      border: `1px solid ${strikes > 2 ? activeColor : notActiveColor}`,
+                      borderRadius: 1,
+                      fontSize: 25,
+                    }}
+                  />
+                </Box>
+              </Box>
+            </Paper>
+            <Paper variant='outlined' sx={{ p: 1 }}>
+              <Box display='flex'>
+                <Typography sx={{ flexGrow: 1 }} color={disabled ? 'text.disabled' : undefined}>
+                  Steal
+                </Typography>
+                <Box display='flex' gap={1} height={25}>
+                  <CloseIcon
+                    sx={{
+                      color: strikes > 3 ? activeColor : notActiveColor,
+                      border: `1px solid ${strikes > 3 ? activeColor : notActiveColor}`,
+                      borderRadius: 1,
+                      fontSize: 25,
+                    }}
+                  />
+                </Box>
+              </Box>
+            </Paper>
           </Box>
-        </Paper>
-        <Paper variant='outlined' sx={{ p: 1 }}>
-          <Box display='flex'>
-            <Typography sx={{ flexGrow: 1 }} color={disabled ? 'text.disabled' : undefined}>
-              Steal
-            </Typography>
-            <Box display='flex' gap={1} height={25}>
-              <CloseIcon
-                sx={{
-                  color: strikes > 3 ? activeColor : notActiveColor,
-                  border: `1px solid ${strikes > 3 ? activeColor : notActiveColor}`,
-                  borderRadius: 1,
-                  fontSize: 25,
-                }}
-              />
-            </Box>
-          </Box>
-        </Paper>
-        <Box display='flex' justifyContent='space-between'>
-          <Button size='small' onClick={handleChange(true)} disabled={disabled || strikes <= 0}>
-            Remove
-          </Button>
-          <Button size='small' onClick={handleChange(false)} disabled={disabled || strikes >= 4}>
+          <Button
+            variant='outlined'
+            onClick={handleChange(false)}
+            disabled={disabled || strikes >= 4}
+            sx={{ minWidth: 75 }}
+          >
             Add
           </Button>
         </Box>
+
+        <Button variant='outlined' onClick={handleChange(true)} disabled={disabled || strikes <= 0}>
+          Remove
+        </Button>
+
         <Box pl={1.5}>
           <FormControlLabel
             control={

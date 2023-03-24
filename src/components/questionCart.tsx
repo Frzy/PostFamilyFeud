@@ -1,7 +1,12 @@
 import * as React from 'react'
 import * as Ably from 'ably'
-import { configureAbly } from '@ably-labs/react-hooks'
-import { ABLY_CHANNEL, ABLY_EVENTS } from '@/utility/constants'
+import { ABLY_EVENTS, ROUND_MODE } from '@/utility/constants'
+
+enum QUESTION_TYPE {
+  NORMAL = 'Publish',
+  DOUBLE = 'Publish x2',
+  TRIPLE = 'Publish x3',
+}
 
 import {
   Button,
@@ -16,31 +21,51 @@ import {
 } from '@mui/material'
 
 import type { ListQuestion } from '@/types/types'
+import SplitButton from './splitButton'
+
 interface QuestionCartProps {
   questions?: ListQuestion[]
+  channel: Ably.Types.RealtimeChannelPromise
   onPublish?: (index: number) => void
   onRePublish?: (question: ListQuestion) => void
   onRemove?: (index: number) => void
 }
 export default function QuestionCart({
   questions = [],
+  channel,
   onPublish,
   onRePublish,
   onRemove,
 }: QuestionCartProps) {
-  const [channel, setChannel] = React.useState<Ably.Types.RealtimeChannelPromise | null>()
+  const [roundMode, setRoundMode] = React.useState<ROUND_MODE>()
   const activeQuestion = React.useMemo(() => {
     return questions.find((q) => q.active)
   }, [questions])
 
+  const handleNewRoundChange = React.useCallback(() => {
+    const activeIndex = questions.findIndex((q) => q.active)
+    if (activeIndex !== -1 && onRemove) onRemove(activeIndex)
+  }, [questions, onRemove])
+
   function handlePublishQuestion(index: number) {
-    return () => {
+    return (questionType: QUESTION_TYPE) => {
       if (onPublish) {
         onPublish(index)
       }
 
       if (channel) {
         const q = questions[index]
+        if (questionType === QUESTION_TYPE.DOUBLE) {
+          q.roundMode = ROUND_MODE.DOUBLE
+          setRoundMode(ROUND_MODE.DOUBLE)
+        } else if (questionType === QUESTION_TYPE.TRIPLE) {
+          q.roundMode = ROUND_MODE.TRIPLE
+          setRoundMode(ROUND_MODE.TRIPLE)
+        } else {
+          q.roundMode = ROUND_MODE.NORMAL
+          setRoundMode(ROUND_MODE.NORMAL)
+        }
+
         channel.publish(ABLY_EVENTS.PUBLISH_QUESITON, q)
       }
     }
@@ -50,31 +75,34 @@ export default function QuestionCart({
       if (onRemove) onRemove(index)
     }
   }
-  function handleRepublish() {
-    if (!activeQuestion) return
-    if (onRePublish) onRePublish(activeQuestion)
-    if (channel) channel.publish(ABLY_EVENTS.PUBLISH_QUESITON, activeQuestion)
-  }
-  function handleNewRoundChange() {
-    const activeIndex = questions.findIndex((q) => q.active)
 
-    if (activeIndex !== -1) handleRemoveQuestion(activeIndex)()
+  function handleRepublish(questionType: QUESTION_TYPE) {
+    return () => {
+      if (!activeQuestion) return
+
+      if (questionType === QUESTION_TYPE.DOUBLE) {
+        activeQuestion.roundMode = ROUND_MODE.DOUBLE
+        setRoundMode(ROUND_MODE.DOUBLE)
+      } else if (questionType === QUESTION_TYPE.TRIPLE) {
+        activeQuestion.roundMode = ROUND_MODE.TRIPLE
+        setRoundMode(ROUND_MODE.TRIPLE)
+      } else {
+        activeQuestion.roundMode = ROUND_MODE.NORMAL
+        setRoundMode(ROUND_MODE.NORMAL)
+      }
+
+      if (onRePublish) onRePublish(activeQuestion)
+      if (channel) channel.publish(ABLY_EVENTS.PUBLISH_QUESITON, activeQuestion)
+    }
   }
 
   React.useEffect(() => {
-    const ably: Ably.Types.RealtimePromise = configureAbly({
-      authUrl: '/api/authentication/token-auth',
-    })
-    const _channel = ably.channels.get(ABLY_CHANNEL)
-
-    _channel.subscribe(ABLY_EVENTS.NEW_ROUND, handleNewRoundChange)
-    setChannel(_channel)
+    if (channel) channel.subscribe(ABLY_EVENTS.NEW_ROUND, handleNewRoundChange)
 
     return () => {
-      _channel.unsubscribe()
+      if (channel) channel.unsubscribe(ABLY_EVENTS.NEW_ROUND, handleNewRoundChange)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [channel, handleNewRoundChange])
 
   return (
     <Stack spacing={1}>
@@ -99,11 +127,23 @@ export default function QuestionCart({
                 ))}
               </Grid>
             </Paper>
+            <Typography color='text.secondary' variant='body2'>
+              Round Mode
+            </Typography>
+            <Paper variant='outlined' sx={{ p: 1 }}>
+              <Grid container>{roundMode?.toUpperCase()}</Grid>
+            </Paper>
           </CardContent>
           <Divider />
           <CardActions>
-            <Button onClick={handleRepublish} fullWidth variant='outlined'>
-              Re-Publish
+            <Button onClick={handleRepublish(QUESTION_TYPE.NORMAL)} fullWidth variant='outlined'>
+              RePublish Normal
+            </Button>
+            <Button onClick={handleRepublish(QUESTION_TYPE.DOUBLE)} fullWidth variant='outlined'>
+              RePublish Double
+            </Button>
+            <Button onClick={handleRepublish(QUESTION_TYPE.TRIPLE)} fullWidth variant='outlined'>
+              RePublish Triple
             </Button>
           </CardActions>
         </Card>
@@ -137,7 +177,11 @@ export default function QuestionCart({
               <Button onClick={handleRemoveQuestion(i)} color='error'>
                 Remove
               </Button>
-              <Button onClick={handlePublishQuestion(i)}>Publish</Button>
+              {/* <Button onClick={handlePublishQuestion(i)}>Publish</Button> */}
+              <SplitButton
+                onClick={handlePublishQuestion(i)}
+                options={[QUESTION_TYPE.NORMAL, QUESTION_TYPE.DOUBLE, QUESTION_TYPE.TRIPLE]}
+              />
             </CardActions>
           </Card>
         )

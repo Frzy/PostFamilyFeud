@@ -3,6 +3,8 @@ import * as React from 'react'
 import {
   Badge,
   Box,
+  Divider,
+  Grid,
   IconButton,
   List,
   ListItem,
@@ -60,6 +62,18 @@ export default function QuestionList({
             </ListItemIcon>
             <Box sx={{ flexGrow: 1, mr: 1 }}>
               <ListItemText sx={{ flexGrow: 1 }}>{q.text}</ListItemText>
+              {q.showAnswers && (
+                <React.Fragment>
+                  <Divider sx={{ my: 1 }} />
+                  <Grid container>
+                    {q.answers.map((a, i) => (
+                      <Grid item key={i} xs={12} sm={6} md={4} lg={2}>
+                        {i + 1}. {a.text}
+                      </Grid>
+                    ))}
+                  </Grid>
+                </React.Fragment>
+              )}
             </Box>
           </ListItemButton>
         </ListItem>

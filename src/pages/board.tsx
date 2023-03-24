@@ -2,7 +2,7 @@ import * as React from 'react'
 import * as Ably from 'ably'
 import { configureAbly } from '@ably-labs/react-hooks'
 import Head from 'next/head'
-import { ABLY_CHANNEL, ABLY_EVENTS } from '@/utility/constants'
+import { ABLY_CHANNEL, ABLY_EVENTS, MUSIC } from '@/utility/constants'
 
 import { Box, Container, Zoom, Typography, Stack, Paper } from '@mui/material'
 import Board from '@/components/board/board'
@@ -19,29 +19,62 @@ export default function BoardView() {
   const [strikeSize, setStrikeSize] = React.useState(0)
 
   const containerRef = React.useRef<HTMLDivElement>(null)
-  const themeRef = React.useRef<HTMLAudioElement>(null)
   const buzzerRef = React.useRef<HTMLAudioElement>(null)
   const dingRef = React.useRef<HTMLAudioElement>(null)
 
-  function playThemeMusic(loop = false) {
-    try {
-      if (themeRef.current) {
-        themeRef.current.loop = loop
-        themeRef.current.play()
-      }
-    } catch (error) {
-      /* empty */
+  const themeRef = React.useRef<HTMLAudioElement>(null)
+  const gunsmokeEndRef = React.useRef<HTMLAudioElement>(null)
+  const gunsmokeThemeRef = React.useRef<HTMLAudioElement>(null)
+  const gunsmokeNextRef = React.useRef<HTMLAudioElement>(null)
+
+  function playMusic(music: MUSIC, loop = false) {
+    let refToPlay
+
+    switch (music) {
+      case MUSIC.THEME:
+        refToPlay = themeRef
+        break
+      case MUSIC.GUNSMOKE_OPEN:
+        refToPlay = gunsmokeThemeRef
+        break
+      case MUSIC.GUNSMOKE_END:
+        refToPlay = gunsmokeEndRef
+        break
+      case MUSIC.GUNSMOKE_NEXT:
+        refToPlay = gunsmokeNextRef
+        break
+    }
+
+    if (refToPlay) playRef(refToPlay, loop)
+  }
+  function playRef(ref: React.RefObject<HTMLAudioElement>, loop = false) {
+    if (ref.current) {
+      stopAllMusic()
+      ref.current.currentTime = 0
+      ref.current.loop = loop
+      ref.current.play()
     }
   }
-  function stopThemeMusic() {
-    try {
-      if (themeRef.current) {
-        themeRef.current.pause()
-        themeRef.current.loop = false
-        themeRef.current.currentTime = 0
-      }
-    } catch (error) {
-      /* empty */
+  function stopAllMusic() {
+    if (themeRef.current) {
+      themeRef.current.pause()
+      themeRef.current.loop = false
+      themeRef.current.currentTime = 0
+    }
+    if (gunsmokeThemeRef.current) {
+      gunsmokeThemeRef.current.pause()
+      gunsmokeThemeRef.current.loop = false
+      gunsmokeThemeRef.current.currentTime = 0
+    }
+    if (gunsmokeEndRef.current) {
+      gunsmokeEndRef.current.pause()
+      gunsmokeEndRef.current.loop = false
+      gunsmokeEndRef.current.currentTime = 0
+    }
+    if (gunsmokeNextRef.current) {
+      gunsmokeNextRef.current.pause()
+      gunsmokeNextRef.current.loop = false
+      gunsmokeNextRef.current.currentTime = 0
     }
   }
   function playDing() {
@@ -105,7 +138,7 @@ export default function BoardView() {
 
         setQuestion(newQuestion)
         if (newQuestion) hideTeamScores()
-        stopThemeMusic()
+        stopAllMusic()
       },
     )
     _channel.subscribe(ABLY_EVENTS.WRONG_ANSWER, (message: Ably.Types.Message) => {
@@ -130,11 +163,11 @@ export default function BoardView() {
 
       setShowQuestion(newShowQuestion)
     })
-    _channel.subscribe(ABLY_EVENTS.PLAY_THEME, (message: Ably.Types.Message) => {
-      const { play: shouldPlayTheme }: { play: boolean } = message.data
-
-      shouldPlayTheme ? playThemeMusic() : stopThemeMusic()
+    _channel.subscribe(ABLY_EVENTS.PLAY_MUSIC, (message: Ably.Types.Message) => {
+      const { music }: { music: MUSIC } = message.data
+      playMusic(music, true)
     })
+    _channel.subscribe(ABLY_EVENTS.STOP_MUSIC, () => stopAllMusic())
 
     window.addEventListener('resize', handleResizeEvent)
     handleResizeEvent()
@@ -248,6 +281,10 @@ export default function BoardView() {
         <audio ref={dingRef} src='/sounds/family_feud_ding.mp3' />
         <audio ref={buzzerRef} src='/sounds/family_feud_buzzer.mp3' />
         <audio ref={themeRef} src='/sounds/family_feud_theme.mp3' />
+
+        <audio ref={gunsmokeEndRef} src='/sounds/gunsmoke_ending_theme.mp3' />
+        <audio ref={gunsmokeNextRef} src='/sounds/gunsmoke_stay_tuned.mp3' />
+        <audio ref={gunsmokeThemeRef} src='/sounds/gunsmoke_opening_theme.mp3' />
       </Container>
     </React.Fragment>
   )

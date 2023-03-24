@@ -6,11 +6,19 @@ export enum ABLY_EVENTS {
   CORRECT_ANSWER = 'correctAnswer',
   GAME_CHANGE = 'gameChange',
   NEW_ROUND = 'newRound',
-  PLAY_THEME = 'playTheme',
   PUBLISH_QUESITON = 'publishQuestion',
   QUESTION_CHANGE = 'questionChange',
   SHOW_QUESTION = 'showQuestion',
   WRONG_ANSWER = 'wrongAnswer',
+  PLAY_MUSIC = 'playMusic',
+  STOP_MUSIC = 'stopMusic',
+}
+
+export enum MUSIC {
+  THEME = 'theme',
+  GUNSMOKE_OPEN = 'gunsmokeOpen',
+  GUNSMOKE_END = 'gunsmokeEnd',
+  GUNSMOKE_NEXT = 'gunsmokeNext',
 }
 
 export const ABLY_CHANNEL = 'status-updates'
