@@ -39,7 +39,7 @@ export default function Judge() {
 
     setQuestion(newQuestion)
   }, [])
-  const layout = React.useMemo(() => {
+  function getLayout() {
     // No Game Present
     if (!game) {
       return <CreateGame onCreate={handleCreateNewGame} />
@@ -74,7 +74,6 @@ export default function Judge() {
     }
 
     // Have game and question
-
     return isSmall ? (
       <Stack spacing={1}>
         <Paper sx={{ px: 2, py: 1, display: 'flex', justifyContent: 'space-between' }}>
@@ -88,7 +87,7 @@ export default function Judge() {
         <Answers
           answers={question.answers}
           roundMode={question.roundMode}
-          reveal={revealQuestion || game.strikes === 4}
+          reveal={revealQuestion || game.strikes === 4 || hasWinner}
           onRevealChange={handleRevealChange}
           onChange={handleAnswerChange}
         />
@@ -133,9 +132,7 @@ export default function Judge() {
         </Grid>
       </Grid>
     )
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [question, game, isSmall, roundWinner])
+  }
 
   function handleRevealChange(newReveal: boolean) {
     setRevealQuestion(newReveal)
@@ -282,7 +279,7 @@ export default function Judge() {
             </Box>
           </Alert>
         )}
-        {layout}
+        {getLayout()}
       </Container>
     </React.Fragment>
   )
