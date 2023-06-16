@@ -169,8 +169,12 @@ export default function Judge() {
     setRoundWinner(undefined)
   }
   function handleCreateNewGame(newGame: Game) {
+    judgeCache.remove('game')
     updateGame(newGame, true)
+    setHasCachedGame(false)
     resetRound()
+
+    if (channel) channel.publish(ABLY_EVENTS.NEW_GAME, newGame)
   }
   function handleLoadCacheGame() {
     const newGame = judgeCache.get('game') as Game
@@ -196,13 +200,21 @@ export default function Judge() {
   function handleAnswerChange(answers: Answer[]) {
     if (question) {
       const newQuestion = { ...question, answers }
+
+      const lastAnswered = question.answers.reduce((count, ans) => {
+        return count + (ans.isAnswered ? 1 : 0)
+      }, 0)
+      const currentAnswered = answers.reduce((count, ans) => {
+        return count + (ans.isAnswered ? 1 : 0)
+      }, 0)
+      const albyEvent =
+        revealQuestion || lastAnswered > currentAnswered
+          ? ABLY_EVENTS.QUESTION_CHANGE
+          : ABLY_EVENTS.CORRECT_ANSWER
+
       setQuestion(newQuestion)
 
-      if (channel)
-        channel.publish(
-          revealQuestion ? ABLY_EVENTS.QUESTION_CHANGE : ABLY_EVENTS.CORRECT_ANSWER,
-          newQuestion,
-        )
+      if (channel) channel.publish(albyEvent, newQuestion)
     }
   }
   function handleStrikeChange(strikes: number, animate: boolean) {
@@ -221,6 +233,7 @@ export default function Judge() {
 
       if (game.totalRounds === nextRound) {
         judgeCache.remove('game')
+        if (channel) channel.publish(ABLY_EVENTS.GAME_OVER, game)
         setGame(undefined)
         resetRound()
       } else {
@@ -268,10 +281,10 @@ export default function Judge() {
         </Typography>
         <Divider sx={{ my: 1 }} />
         {hasCachedGame && (
-          <Alert severity='warning' sx={{ '& .MuiAlert-message': { width: '100%' } }}>
+          <Alert severity='warning' sx={{ '& .MuiAlert-message': { width: '100%' }, mb: 1 }}>
             There seems to be a cached game that was not completed. Would you like to load or
             dismiss it?
-            <Box width='100%' display='flex' justifyContent='flex-end'>
+            <Box width='100%' display='flex' justifyContent='space-between'>
               <Button color='error' onClick={handleDismissCachedGame}>
                 Dismiss
               </Button>

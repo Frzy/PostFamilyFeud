@@ -41,13 +41,16 @@ export default function Answers({
   }, [answers, roundMode])
   function toggleAnswer(answerIndex: number) {
     return () => {
-      const answer = answers[answerIndex]
+      const newAnswers = [...answers]
+      const answer = {...newAnswers[answerIndex]}
       const answerToggled = !answer.showAnswer
 
       answer.showAnswer = answerToggled
       answer.isAnswered = reveal ? false : answerToggled
 
-      if (onChange) onChange([...answers])
+      newAnswers.splice(answerIndex, 1, answer)
+
+      if (onChange) onChange(newAnswers)
     }
   }
 

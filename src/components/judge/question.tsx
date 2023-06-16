@@ -33,7 +33,7 @@ export default function Question({ question, disabled, onVisibilityChange }: Jud
         <Divider />
         <Box display='flex' justifyContent='space-evenly' sx={{ px: 1 }}>
           <Button onClick={handleBoardQuestionVisibility(false)} disabled={disabled}>
-            Hide Question
+            Show Strikes
           </Button>
           <Button onClick={handleBoardQuestionVisibility(true)} disabled={disabled}>
             Show Question

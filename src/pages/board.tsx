@@ -2,7 +2,13 @@ import * as React from 'react'
 import * as Ably from 'ably'
 import { configureAbly } from '@ably-labs/react-hooks'
 import Head from 'next/head'
-import { ABLY_CHANNEL, ABLY_EVENTS, MUSIC } from '@/utility/constants'
+import {
+  ABLY_CHANNEL,
+  ABLY_EVENTS,
+  MUSIC,
+  MUSIC_SRC,
+  SHOW_QUESTION_STRIKE_DELAY,
+} from '@/utility/constants'
 
 import { Box, Container, Zoom, Typography, Stack, Paper } from '@mui/material'
 import Board from '@/components/board/board'
@@ -144,12 +150,29 @@ export default function BoardView() {
     _channel.subscribe(ABLY_EVENTS.WRONG_ANSWER, (message: Ably.Types.Message) => {
       const newGame: Game = message.data
 
+      setShowQuestion(false)
+      setTimeout(() => setShowQuestion(true), SHOW_QUESTION_STRIKE_DELAY)
+
       handleWrongAnswer(newGame)
     })
     _channel.subscribe(ABLY_EVENTS.CORRECT_ANSWER, (message: Ably.Types.Message) => {
       const newQuesiton: RoundQuestion = message.data
 
       handleCorrectAnswer(newQuesiton)
+    })
+    _channel.subscribe(ABLY_EVENTS.NEW_GAME, (message: Ably.Types.Message) => {
+      const newGame: Game = message.data
+
+      setGame(newGame)
+      setQuestion(undefined)
+      showTeamScores()
+    })
+    _channel.subscribe(ABLY_EVENTS.GAME_OVER, (message: Ably.Types.Message) => {
+      const newGame: Game = message.data
+
+      setGame(newGame)
+      setQuestion(undefined)
+      showTeamScores()
     })
     _channel.subscribe(ABLY_EVENTS.NEW_ROUND, (message: Ably.Types.Message) => {
       const newGame: Game = message.data
@@ -278,13 +301,12 @@ export default function BoardView() {
             </Box>
           </Box>
         </Zoom>
-        <audio ref={dingRef} src='/sounds/family_feud_ding.mp3' />
-        <audio ref={buzzerRef} src='/sounds/family_feud_buzzer.mp3' />
-        <audio ref={themeRef} src='/sounds/family_feud_theme.mp3' />
-
-        <audio ref={gunsmokeEndRef} src='/sounds/gunsmoke_ending_theme.mp3' />
-        <audio ref={gunsmokeNextRef} src='/sounds/gunsmoke_stay_tuned.mp3' />
-        <audio ref={gunsmokeThemeRef} src='/sounds/gunsmoke_opening_theme.mp3' />
+        <audio ref={dingRef} src={MUSIC_SRC.DING} />
+        <audio ref={buzzerRef} src={MUSIC_SRC.BUZZER} />
+        <audio ref={themeRef} src={MUSIC_SRC.FEUD_THEME} />
+        <audio ref={gunsmokeEndRef} src={MUSIC_SRC.GUNSMOKE_END} />
+        <audio ref={gunsmokeNextRef} src={MUSIC_SRC.GUNSMOKE_THEME} />
+        <audio ref={gunsmokeThemeRef} src={MUSIC_SRC.GUNSMOKE_STAY_TUNED} />
       </Container>
     </React.Fragment>
   )

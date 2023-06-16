@@ -4,14 +4,16 @@ import { Game } from '@/types/types'
 
 export enum ABLY_EVENTS {
   CORRECT_ANSWER = 'correctAnswer',
+  NEW_GAME = 'newGame',
   GAME_CHANGE = 'gameChange',
+  GAME_OVER = 'gameOver',
   NEW_ROUND = 'newRound',
+  PLAY_MUSIC = 'playMusic',
   PUBLISH_QUESITON = 'publishQuestion',
   QUESTION_CHANGE = 'questionChange',
   SHOW_QUESTION = 'showQuestion',
-  WRONG_ANSWER = 'wrongAnswer',
-  PLAY_MUSIC = 'playMusic',
   STOP_MUSIC = 'stopMusic',
+  WRONG_ANSWER = 'wrongAnswer',
 }
 
 export enum MUSIC {
@@ -81,3 +83,14 @@ export const BASE_GAME: Game = {
   roundsPlayed: 0,
   strikes: 0,
 }
+
+export enum MUSIC_SRC {
+  DING = '/sounds/family_feud_ding_V2.mp3',
+  BUZZER = '/sounds/family_feud_buzzer_V2.mp3',
+  FEUD_THEME = '/sounds/family_feud_theme_V2.mp3',
+  GUNSMOKE_END = '/sounds/gunsmoke_ending_theme_V2.mp3',
+  GUNSMOKE_THEME = '/sounds/gunsmoke_stay_tuned_V2.mp3',
+  GUNSMOKE_STAY_TUNED = '/sounds/gunsmoke_opening_theme_V2.mp3',
+}
+
+export const SHOW_QUESTION_STRIKE_DELAY = 5000
