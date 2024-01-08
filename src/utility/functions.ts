@@ -1,5 +1,5 @@
 import type { Answer } from '@/types/types'
-import { ROUND_MODE } from './constants'
+import { ABLY_CHANNEL, ROUND_MODE } from './constants'
 
 export function getAnsweredPoints(answers?: Answer[], roundMode?: ROUND_MODE) {
   if (!answers || !Array.isArray(answers)) return 0
@@ -47,4 +47,8 @@ export function getMultiplier(roundMode: ROUND_MODE) {
     default:
       return 1
   }
+}
+
+export function getGameChannel(channelCode: string) {
+  return `${channelCode}_${ABLY_CHANNEL}`.toLowerCase()
 }

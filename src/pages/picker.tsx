@@ -2,7 +2,7 @@ import * as React from 'react'
 import * as Ably from 'ably'
 import Head from 'next/head'
 import { configureAbly } from '@ably-labs/react-hooks'
-import { ABLY_CHANNEL, ABLY_EVENTS, MUSIC, ROUND_MODE } from '@/utility/constants'
+import { ABLY_EVENTS, GAME_CHANNEL_KEY, MUSIC, ROUND_MODE } from '@/utility/constants'
 
 import {
   Alert,
@@ -26,8 +26,12 @@ import QuestionList from '@/components/questionList'
 import QuestionCart from '@/components/questionCart'
 import AddIcon from '@mui/icons-material/Add'
 import Pagination from '@mui/material/Pagination'
-
+import BroadcastsIcon from '@mui/icons-material/Podcasts'
+import UpdateGameChannelDialog from '@/components/UpdateGameChannelDialog'
 import type { ListQuestion, Question } from '@/types/types'
+import store from 'store2'
+import { getGameChannel } from '@/utility/functions'
+import GameChannelDialog from '@/components/GameChannelDialog'
 
 enum PICKER_MODE {
   BY_TERM = 'term',
@@ -60,6 +64,8 @@ const ENDPOINT = '/api/questions'
 export default function Picker() {
   const theme = useTheme()
   const isSmall = useMediaQuery(theme.breakpoints.down('md'))
+  const [gameChannel, setGameChannel] = React.useState<string | null>(store.get(GAME_CHANNEL_KEY))
+  const [showEditChannelDialog, setShowChannelEditDialog] = React.useState(false)
   const [channel, setChannel] = React.useState<Ably.Types.RealtimeChannelPromise>()
   const [mode, setMode] = React.useState(PICKER_MODE.BY_ANSWERS)
   const [view, setView] = React.useState(PICKER_VIEW.SEARCH)
@@ -221,13 +227,32 @@ export default function Picker() {
   }
 
   React.useEffect(() => {
-    const ably: Ably.Types.RealtimePromise = configureAbly({
-      authUrl: '/api/authentication/token-auth',
-    })
-    setChannel(ably.channels.get(ABLY_CHANNEL))
-  }, [])
+    let _channel: Ably.Types.RealtimeChannelPromise | undefined
 
-  if (!channel) return null
+    if (gameChannel) {
+      const ablyChannelName = getGameChannel(gameChannel)
+      const ably: Ably.Types.RealtimePromise = configureAbly({
+        authUrl: '/api/authentication/token-auth',
+      })
+      _channel = ably.channels.get(ablyChannelName)
+      setChannel(_channel)
+    }
+
+    return () => {
+      if (_channel) _channel.unsubscribe()
+    }
+  }, [gameChannel])
+
+  if (!channel)
+    return (
+      <GameChannelDialog
+        open={!gameChannel}
+        onSubmit={(newChannel, rememberMe) => {
+          if (rememberMe) store.set(GAME_CHANNEL_KEY, newChannel)
+          setGameChannel(newChannel)
+        }}
+      />
+    )
 
   return (
     <React.Fragment>
@@ -237,7 +262,7 @@ export default function Picker() {
         <meta name='viewport' content='width=device-width, initial-scale=1' />
         <link rel='icon' href='/favicon.ico' />
       </Head>
-      <Container maxWidth='xl' sx={{ pt: 1, pb: 2, minWidth: 300 }}>
+      <Container maxWidth='xl' sx={{ pt: 1, pb: '50px', minWidth: 300 }}>
         <Stack spacing={1} sx={{ pb: hasSelectedPoolQuestion ? 6 : 0 }}>
           {view === PICKER_VIEW.SEARCH ? (
             <React.Fragment>
@@ -433,7 +458,34 @@ export default function Picker() {
             </Fab>
           </Box>
         </Zoom>
+        <UpdateGameChannelDialog
+          open={showEditChannelDialog}
+          gameChannel={gameChannel ?? ''}
+          onClose={() => setShowChannelEditDialog(false)}
+          onSubmit={(newChannel, rememberMe) => {
+            if (rememberMe) store.set(GAME_CHANNEL_KEY, newChannel)
+            setGameChannel(newChannel)
+          }}
+        />
       </Container>
+      {gameChannel && (
+        <Fab
+          variant='extended'
+          size='small'
+          color='primary'
+          sx={{
+            position: 'fixed',
+            left: 8,
+            bottom: 8,
+          }}
+          onClick={() => {
+            setShowChannelEditDialog(true)
+          }}
+        >
+          <BroadcastsIcon sx={{ mr: 1 }} />
+          {gameChannel}
+        </Fab>
+      )}
     </React.Fragment>
   )
 }

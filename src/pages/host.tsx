@@ -1,18 +1,25 @@
 import * as React from 'react'
 import { configureAbly } from '@ably-labs/react-hooks'
-import { ABLY_CHANNEL, ABLY_EVENTS, MUSIC } from '@/utility/constants'
+import { ABLY_EVENTS, GAME_CHANNEL_KEY, MUSIC } from '@/utility/constants'
 import * as Ably from 'ably'
 import Head from 'next/head'
 
-import { Container, Typography, Divider, Button, Paper, Stack, Grid } from '@mui/material'
+import { Container, Typography, Divider, Button, Paper, Stack, Grid, Fab } from '@mui/material'
 import PlayArrowIcon from '@mui/icons-material/PlayArrow'
 import StopIcon from '@mui/icons-material/Stop'
 import type { RoundQuestion } from '@/types/types'
 import QuestionViewer from '@/components/questionViewer'
+import store from 'store2'
+import GameChannelDialog from '@/components/GameChannelDialog'
+import { getGameChannel } from '@/utility/functions'
+import BroadcastsIcon from '@mui/icons-material/Podcasts'
+import UpdateGameChannelDialog from '@/components/UpdateGameChannelDialog'
 
 export default function Host() {
+  const [gameChannel, setGameChannel] = React.useState<string | null>(store.get(GAME_CHANNEL_KEY))
   const [channel, setChannel] = React.useState<Ably.Types.RealtimeChannelPromise | null>(null)
   const [activeQuestion, setActiveQuestion] = React.useState<RoundQuestion>()
+  const [showEditChannelDialog, setShowChannelEditDialog] = React.useState(false)
 
   function playThemeSong() {
     if (channel) {
@@ -26,24 +33,31 @@ export default function Host() {
   }
 
   React.useEffect(() => {
-    const ably: Ably.Types.RealtimePromise = configureAbly({
-      authUrl: '/api/authentication/token-auth',
-    })
-    const _channel = ably.channels.get(ABLY_CHANNEL)
-    _channel.subscribe(ABLY_EVENTS.PUBLISH_QUESITON, (message: Ably.Types.Message) => {
-      const newQuestion: RoundQuestion = message.data
+    let _channel: Ably.Types.RealtimeChannelPromise | undefined
 
-      setActiveQuestion(newQuestion)
-    })
-    _channel.subscribe(ABLY_EVENTS.NEW_ROUND, () => {
-      setActiveQuestion(undefined)
-    })
+    if (gameChannel) {
+      const ablyChannelName = getGameChannel(gameChannel)
+      const ably: Ably.Types.RealtimePromise = configureAbly({
+        authUrl: '/api/authentication/token-auth',
+      })
 
-    setChannel(_channel)
-    return () => {
-      _channel.unsubscribe()
+      _channel = ably.channels.get(ablyChannelName)
+      _channel.subscribe(ABLY_EVENTS.PUBLISH_QUESITON, (message: Ably.Types.Message) => {
+        const newQuestion: RoundQuestion = message.data
+
+        setActiveQuestion(newQuestion)
+      })
+      _channel.subscribe(ABLY_EVENTS.NEW_ROUND, () => {
+        setActiveQuestion(undefined)
+      })
+
+      setChannel(_channel)
     }
-  }, [])
+
+    return () => {
+      if (_channel) _channel.unsubscribe()
+    }
+  }, [gameChannel])
 
   return (
     <React.Fragment>
@@ -61,6 +75,7 @@ export default function Host() {
           display: 'flex',
           flexDirection: 'column',
           pt: 2,
+          pb: '50px',
         }}
       >
         <Stack spacing={1}>
@@ -99,7 +114,41 @@ export default function Host() {
             </Grid>
           </Grid>
         </Stack>
+        <GameChannelDialog
+          open={!gameChannel}
+          onSubmit={(newChannel, rememberMe) => {
+            if (rememberMe) store.set(GAME_CHANNEL_KEY, newChannel)
+            setGameChannel(newChannel)
+          }}
+        />
+        <UpdateGameChannelDialog
+          open={showEditChannelDialog}
+          gameChannel={gameChannel ?? ''}
+          onClose={() => setShowChannelEditDialog(false)}
+          onSubmit={(newChannel, rememberMe) => {
+            if (rememberMe) store.set(GAME_CHANNEL_KEY, newChannel)
+            setGameChannel(newChannel)
+          }}
+        />
       </Container>
+      {gameChannel && (
+        <Fab
+          variant='extended'
+          size='small'
+          color='primary'
+          sx={{
+            position: 'fixed',
+            right: 8,
+            bottom: 8,
+          }}
+          onClick={() => {
+            setShowChannelEditDialog(true)
+          }}
+        >
+          <BroadcastsIcon sx={{ mr: 1 }} />
+          {gameChannel}
+        </Fab>
+      )}
     </React.Fragment>
   )
 }
