@@ -23,6 +23,7 @@ export enum MUSIC {
   GUNSMOKE_NEXT = 'gunsmokeNext',
 }
 
+export const GAME_CHANNEL_KEY = 'game-channel'
 export const ABLY_CHANNEL = 'status-updates'
 export const STORAGE_KEY = 'PostFamilyFeud'
 export const HOST_STORAGE_KEY = 'PostFamilyFeudHost'

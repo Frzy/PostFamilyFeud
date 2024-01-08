@@ -3,10 +3,10 @@ import * as Ably from 'ably'
 import Head from 'next/head'
 import store from 'store2'
 import { configureAbly } from '@ably-labs/react-hooks'
-import { ABLY_CHANNEL, ABLY_EVENTS, JUDGE_STORAGE_KEY, ROUND_MODE } from '@/utility/constants'
-import { getAnsweredPoints } from '@/utility/functions'
+import { ABLY_EVENTS, GAME_CHANNEL_KEY, JUDGE_STORAGE_KEY, ROUND_MODE } from '@/utility/constants'
+import { getAnsweredPoints, getGameChannel } from '@/utility/functions'
 
-import { Alert, Box, Button, Stack, useMediaQuery, useTheme } from '@mui/material'
+import { Alert, Box, Button, Fab, Stack, useMediaQuery, useTheme } from '@mui/material'
 import Answers from '@/components/judge/answers'
 import Container from '@mui/material/Container'
 import CreateGame from '@/components/judge/createGame'
@@ -17,14 +17,20 @@ import Paper from '@mui/material/Paper'
 import Question from '@/components/judge/question'
 import Strikes from '@/components/judge/strikes'
 import Typography from '@mui/material/Typography'
-
+import BroadcastsIcon from '@mui/icons-material/Podcasts'
+import UpdateGameChannelDialog from '@/components/UpdateGameChannelDialog'
 import type { Answer, Game, RoundQuestion, TeamName } from '@/types/types'
+import GameChannelDialog from '@/components/GameChannelDialog'
 
 const judgeCache = store.namespace(JUDGE_STORAGE_KEY)
 
 export default function Judge() {
   const theme = useTheme()
   const isSmall = useMediaQuery(theme.breakpoints.down('md'))
+  const [gameChannel, setGameChannel] = React.useState<string | null>(
+    store.get(GAME_CHANNEL_KEY, null),
+  )
+  const [showEditChannelDialog, setShowChannelEditDialog] = React.useState(false)
   const [channel, setChannel] = React.useState<Ably.Types.RealtimeChannelPromise | null>()
   const [hasCachedGame, setHasCachedGame] = React.useState(false)
   const [game, setGame] = React.useState<Game>()
@@ -250,22 +256,27 @@ export default function Judge() {
   }
 
   React.useEffect(() => {
-    const ably: Ably.Types.RealtimePromise = configureAbly({
-      authUrl: '/api/authentication/token-auth',
-    })
-    const _channel = ably.channels.get(ABLY_CHANNEL)
+    let _channel: Ably.Types.RealtimeChannelPromise | undefined
 
-    _channel.subscribe(ABLY_EVENTS.PUBLISH_QUESITON, handleQuestionSubscription)
+    if (gameChannel) {
+      const ablyChannelName = getGameChannel(gameChannel)
+      const ably: Ably.Types.RealtimePromise = configureAbly({
+        authUrl: '/api/authentication/token-auth',
+      })
+      const _channel = ably.channels.get(ablyChannelName)
 
-    setChannel(_channel)
+      _channel.subscribe(ABLY_EVENTS.PUBLISH_QUESITON, handleQuestionSubscription)
 
-    setHasCachedGame(!!judgeCache.get('game'))
+      setChannel(_channel)
+
+      setHasCachedGame(!!judgeCache.get('game'))
+    }
 
     return () => {
-      _channel.unsubscribe()
+      if (_channel) _channel.unsubscribe()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [gameChannel])
 
   return (
     <React.Fragment>
@@ -275,7 +286,7 @@ export default function Judge() {
         <meta name='viewport' content='width=device-width, initial-scale=1' />
         <link rel='icon' href='/favicon.ico' />
       </Head>
-      <Container maxWidth='xl' sx={{ pt: 1, pb: 2, minWidth: 300 }}>
+      <Container maxWidth='xl' sx={{ pt: 1, pb: '50px', minWidth: 300 }}>
         <Typography variant='h3' align='center'>
           Judge
         </Typography>
@@ -293,7 +304,41 @@ export default function Judge() {
           </Alert>
         )}
         {getLayout()}
+        <GameChannelDialog
+          open={!gameChannel}
+          onSubmit={(newChannel, rememberMe) => {
+            if (rememberMe) store.set(GAME_CHANNEL_KEY, newChannel)
+            setGameChannel(newChannel)
+          }}
+        />
+        <UpdateGameChannelDialog
+          open={showEditChannelDialog}
+          gameChannel={gameChannel ?? ''}
+          onClose={() => setShowChannelEditDialog(false)}
+          onSubmit={(newChannel, rememberMe) => {
+            if (rememberMe) store.set(GAME_CHANNEL_KEY, newChannel)
+            setGameChannel(newChannel)
+          }}
+        />
       </Container>
+      {gameChannel && (
+        <Fab
+          variant='extended'
+          size='small'
+          color='primary'
+          sx={{
+            position: 'fixed',
+            right: 8,
+            bottom: 8,
+          }}
+          onClick={() => {
+            setShowChannelEditDialog(true)
+          }}
+        >
+          <BroadcastsIcon sx={{ mr: 1 }} />
+          {gameChannel}
+        </Fab>
+      )}
     </React.Fragment>
   )
 }

@@ -2,21 +2,29 @@ import * as React from 'react'
 import * as Ably from 'ably'
 import { configureAbly } from '@ably-labs/react-hooks'
 import Head from 'next/head'
+import store from 'store2'
 import {
-  ABLY_CHANNEL,
   ABLY_EVENTS,
+  GAME_CHANNEL_KEY,
   MUSIC,
   MUSIC_SRC,
   SHOW_QUESTION_STRIKE_DELAY,
 } from '@/utility/constants'
-
-import { Box, Container, Zoom, Typography, Stack, Paper } from '@mui/material'
+import { Box, Container, Zoom, Typography, Stack, Paper, Fab } from '@mui/material'
 import Board from '@/components/board/board'
 import Image from 'next/image'
-
 import type { Game, RoundQuestion } from '@/types/types'
+import { getGameChannel } from '@/utility/functions'
+import GameChannelDialog from '@/components/GameChannelDialog'
+import BroadcastsIcon from '@mui/icons-material/Podcasts'
+import UpdateGameChannelDialog from '@/components/UpdateGameChannelDialog'
+import { HideOnMouseStop } from 'react-hide-on-mouse-stop'
 
 export default function BoardView() {
+  const [gameChannel, setGameChannel] = React.useState<string | null>(
+    store.get(GAME_CHANNEL_KEY, null),
+  )
+  const [showEditChannelDialog, setShowChannelEditDialog] = React.useState(false)
   const [game, setGame] = React.useState<Game>()
   const [question, setQuestion] = React.useState<RoundQuestion>()
   const [showStrike, setShowStrike] = React.useState(false)
@@ -128,78 +136,88 @@ export default function BoardView() {
   }
 
   React.useEffect(() => {
-    const ably: Ably.Types.RealtimePromise = configureAbly({
-      authUrl: '/api/authentication/token-auth',
-    })
-    const _channel = ably.channels.get(ABLY_CHANNEL)
-    _channel.subscribe(ABLY_EVENTS.GAME_CHANGE, (message: Ably.Types.Message) => {
-      const newGame: Game = message.data
+    let _channel: Ably.Types.RealtimeChannelPromise | undefined
 
-      setGame(newGame)
-    })
-    _channel.subscribe(
-      [ABLY_EVENTS.QUESTION_CHANGE, ABLY_EVENTS.PUBLISH_QUESITON],
-      (message: Ably.Types.Message) => {
-        const newQuestion: RoundQuestion = message.data
+    if (gameChannel) {
+      const ablyChannelName = getGameChannel(gameChannel)
+      const ably: Ably.Types.RealtimePromise = configureAbly({
+        authUrl: '/api/authentication/token-auth',
+      })
 
-        setQuestion(newQuestion)
-        if (newQuestion) hideTeamScores()
-        stopAllMusic()
-      },
-    )
-    _channel.subscribe(ABLY_EVENTS.WRONG_ANSWER, (message: Ably.Types.Message) => {
-      const newGame: Game = message.data
+      _channel = ably.channels.get(ablyChannelName)
+      _channel.subscribe(ABLY_EVENTS.GAME_CHANGE, (message: Ably.Types.Message) => {
+        const newGame: Game = message.data
 
-      setShowQuestion(false)
-      setTimeout(() => setShowQuestion(true), SHOW_QUESTION_STRIKE_DELAY)
+        setGame(newGame)
+      })
+      _channel.subscribe(
+        [ABLY_EVENTS.QUESTION_CHANGE, ABLY_EVENTS.PUBLISH_QUESITON],
+        (message: Ably.Types.Message) => {
+          const newQuestion: RoundQuestion = message.data
 
-      handleWrongAnswer(newGame)
-    })
-    _channel.subscribe(ABLY_EVENTS.CORRECT_ANSWER, (message: Ably.Types.Message) => {
-      const newQuesiton: RoundQuestion = message.data
+          setQuestion(newQuestion)
+          if (newQuestion) hideTeamScores()
+          stopAllMusic()
+        },
+      )
+      _channel.subscribe(ABLY_EVENTS.WRONG_ANSWER, (message: Ably.Types.Message) => {
+        const newGame: Game = message.data
 
-      handleCorrectAnswer(newQuesiton)
-    })
-    _channel.subscribe(ABLY_EVENTS.NEW_GAME, (message: Ably.Types.Message) => {
-      const newGame: Game = message.data
+        setShowQuestion(false)
+        setTimeout(() => setShowQuestion(true), SHOW_QUESTION_STRIKE_DELAY)
 
-      setGame(newGame)
-      setQuestion(undefined)
-      showTeamScores()
-    })
-    _channel.subscribe(ABLY_EVENTS.GAME_OVER, (message: Ably.Types.Message) => {
-      const newGame: Game = message.data
+        handleWrongAnswer(newGame)
+      })
+      _channel.subscribe(ABLY_EVENTS.CORRECT_ANSWER, (message: Ably.Types.Message) => {
+        const newQuesiton: RoundQuestion = message.data
 
-      setGame(newGame)
-      setQuestion(undefined)
-      showTeamScores()
-    })
-    _channel.subscribe(ABLY_EVENTS.NEW_ROUND, (message: Ably.Types.Message) => {
-      const newGame: Game = message.data
+        handleCorrectAnswer(newQuesiton)
+      })
+      _channel.subscribe(ABLY_EVENTS.NEW_GAME, (message: Ably.Types.Message) => {
+        const newGame: Game = message.data
 
-      setGame(newGame)
-      setQuestion(undefined)
-      showTeamScores()
-    })
-    _channel.subscribe(ABLY_EVENTS.SHOW_QUESTION, (message: Ably.Types.Message) => {
-      const { show: newShowQuestion }: { show: boolean } = message.data
+        setGame(newGame)
+        setQuestion(undefined)
+        showTeamScores()
+      })
+      _channel.subscribe(ABLY_EVENTS.GAME_OVER, (message: Ably.Types.Message) => {
+        const newGame: Game = message.data
 
-      setShowQuestion(newShowQuestion)
-    })
-    _channel.subscribe(ABLY_EVENTS.PLAY_MUSIC, (message: Ably.Types.Message) => {
-      const { music }: { music: MUSIC } = message.data
-      playMusic(music, true)
-    })
-    _channel.subscribe(ABLY_EVENTS.STOP_MUSIC, () => stopAllMusic())
+        setGame(newGame)
+        setQuestion(undefined)
+        showTeamScores()
+      })
+      _channel.subscribe(ABLY_EVENTS.NEW_ROUND, (message: Ably.Types.Message) => {
+        const newGame: Game = message.data
 
-    window.addEventListener('resize', handleResizeEvent)
-    handleResizeEvent()
+        setGame(newGame)
+        setQuestion(undefined)
+        showTeamScores()
+      })
+      _channel.subscribe(ABLY_EVENTS.SHOW_QUESTION, (message: Ably.Types.Message) => {
+        const { show: newShowQuestion }: { show: boolean } = message.data
+
+        setShowQuestion(newShowQuestion)
+      })
+      _channel.subscribe(ABLY_EVENTS.PLAY_MUSIC, (message: Ably.Types.Message) => {
+        const { music }: { music: MUSIC } = message.data
+        playMusic(music, true)
+      })
+      _channel.subscribe(ABLY_EVENTS.STOP_MUSIC, () => stopAllMusic())
+    }
 
     return () => {
-      window.removeEventListener('resize', handleResizeEvent)
-      _channel.unsubscribe()
+      if (_channel) _channel.unsubscribe()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gameChannel])
+
+  React.useEffect(() => {
+    window.addEventListener('resize', handleResizeEvent)
+    handleResizeEvent()
+    return () => {
+      window.removeEventListener('resize', handleResizeEvent)
+    }
   }, [])
 
   React.useEffect(() => {
@@ -307,7 +325,46 @@ export default function BoardView() {
         <audio ref={gunsmokeEndRef} src={MUSIC_SRC.GUNSMOKE_END} />
         <audio ref={gunsmokeNextRef} src={MUSIC_SRC.GUNSMOKE_THEME} />
         <audio ref={gunsmokeThemeRef} src={MUSIC_SRC.GUNSMOKE_STAY_TUNED} />
+        <GameChannelDialog
+          open={!gameChannel}
+          onSubmit={(newChannel, rememberMe) => {
+            if (rememberMe) store.set(GAME_CHANNEL_KEY, newChannel)
+            setGameChannel(newChannel)
+          }}
+        />
+        <UpdateGameChannelDialog
+          open={showEditChannelDialog}
+          gameChannel={gameChannel ?? ''}
+          onClose={() => setShowChannelEditDialog(false)}
+          onSubmit={(newChannel, rememberMe) => {
+            if (rememberMe) store.set(GAME_CHANNEL_KEY, newChannel)
+            setGameChannel(newChannel)
+          }}
+        />
       </Container>
+      {gameChannel && (
+        <HideOnMouseStop delay={8000} hideCursor>
+          <Fab
+            variant='extended'
+            size='small'
+            color='primary'
+            sx={{
+              transition: (theme) =>
+                theme.transitions.create('opacity', { duration: theme.transitions.duration.short }),
+              position: 'fixed',
+              right: 8,
+              bottom: 8,
+              opacity: 1,
+            }}
+            onClick={() => {
+              setShowChannelEditDialog(true)
+            }}
+          >
+            <BroadcastsIcon sx={{ mr: 1 }} />
+            {gameChannel}
+          </Fab>
+        </HideOnMouseStop>
+      )}
     </React.Fragment>
   )
 }
