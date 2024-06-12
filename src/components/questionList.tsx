@@ -68,7 +68,7 @@ export default function QuestionList({
                   <Grid container>
                     {q.answers.map((a, i) => (
                       <Grid item key={i} xs={12} sm={6} md={4} lg={2}>
-                        {i + 1}. {a.text}
+                        {i + 1}. {a.text} - {a.points}
                       </Grid>
                     ))}
                   </Grid>

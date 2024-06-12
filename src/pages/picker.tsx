@@ -28,7 +28,7 @@ import AddIcon from '@mui/icons-material/Add'
 import Pagination from '@mui/material/Pagination'
 import BroadcastsIcon from '@mui/icons-material/Podcasts'
 import UpdateGameChannelDialog from '@/components/UpdateGameChannelDialog'
-import type { ListQuestion, Question } from '@/types/types'
+import type { ListQuestion, QuestionResponse } from '@/types/types'
 import store from 'store2'
 import { getGameChannel } from '@/utility/functions'
 import GameChannelDialog from '@/components/GameChannelDialog'
@@ -48,15 +48,7 @@ enum NUM_ANSWER {
   FIVE = '5',
   SIX = '6',
   SEVEN = '7',
-}
-
-enum MAX_PAGES {
-  ANY = 218,
-  THREE = 13,
-  FOUR = 55,
-  FIVE = 59,
-  SIX = 59,
-  SEVEN = 42,
+  EIGHT = '8',
 }
 
 const ENDPOINT = '/api/questions'
@@ -75,22 +67,7 @@ export default function Picker() {
   const [fetching, setFetching] = React.useState(false)
   const [questionPool, setQuesitonPool] = React.useState<ListQuestion[]>()
   const [cartQuestions, setCartQuestions] = React.useState<ListQuestion[]>([])
-  const maxPages = React.useMemo(() => {
-    switch (numAnswer) {
-      case NUM_ANSWER.THREE:
-        return MAX_PAGES.THREE
-      case NUM_ANSWER.FOUR:
-        return MAX_PAGES.FOUR
-      case NUM_ANSWER.FIVE:
-        return MAX_PAGES.FIVE
-      case NUM_ANSWER.SIX:
-        return MAX_PAGES.SIX
-      case NUM_ANSWER.SEVEN:
-        return MAX_PAGES.SEVEN
-      default:
-        return MAX_PAGES.ANY
-    }
-  }, [numAnswer])
+  const [maxPages, setMaxPages] = React.useState(1)
   const hasSelectedPoolQuestion = React.useMemo(() => {
     return questionPool ? questionPool.some((q) => q.selected) : false
   }, [questionPool])
@@ -98,7 +75,6 @@ export default function Picker() {
     if (newMode) {
       setMode(newMode)
       setQuesitonPool(undefined)
-      setPage(1)
       setSearchTerm('')
       setNumAnswer(NUM_ANSWER.ANY)
     }
@@ -109,7 +85,6 @@ export default function Picker() {
   ) {
     if (newAnswer) {
       setNumAnswer(newAnswer)
-      setPage(1)
     }
   }
   function handleSearchTermChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -191,7 +166,6 @@ export default function Picker() {
     if (newCart.length === 0) setView(PICKER_VIEW.SEARCH)
   }
   function handlePageChange(event: React.ChangeEvent<unknown>, newPage: number) {
-    setPage(newPage)
     handleGetQuestions({ page: `${newPage}` })
   }
 
@@ -218,9 +192,11 @@ export default function Picker() {
       }
 
       const response = await fetch(url)
-      const data: Question[] = await response.json()
+      const data: QuestionResponse = await response.json()
 
-      setQuesitonPool(data.map((q) => ({ ...q, roundMode: ROUND_MODE.NORMAL })))
+      setMaxPages(data.totalPages)
+      setPage(data.page)
+      setQuesitonPool(data.questions.map((q) => ({ ...q, roundMode: ROUND_MODE.NORMAL })))
     } finally {
       setFetching(false)
     }
@@ -304,6 +280,7 @@ export default function Picker() {
                           <ToggleButton value={NUM_ANSWER.FIVE}>5</ToggleButton>
                           <ToggleButton value={NUM_ANSWER.SIX}>6</ToggleButton>
                           <ToggleButton value={NUM_ANSWER.SEVEN}>7</ToggleButton>
+                          <ToggleButton value={NUM_ANSWER.EIGHT}>8</ToggleButton>
                         </ToggleButtonGroup>
                       )}
                     </React.Fragment>
@@ -341,6 +318,7 @@ export default function Picker() {
                           <ToggleButton value={NUM_ANSWER.FIVE}>5</ToggleButton>
                           <ToggleButton value={NUM_ANSWER.SIX}>6</ToggleButton>
                           <ToggleButton value={NUM_ANSWER.SEVEN}>7</ToggleButton>
+                          <ToggleButton value={NUM_ANSWER.EIGHT}>8</ToggleButton>
                         </ToggleButtonGroup>
                       )}
                     </Box>
@@ -427,7 +405,7 @@ export default function Picker() {
                 <Box display='flex' justifyContent='center'>
                   <Pagination
                     page={page}
-                    count={questionPool.length < 15 ? page : maxPages}
+                    count={maxPages}
                     onChange={handlePageChange}
                     boundaryCount={view === PICKER_VIEW.SEARCH && searchTerm ? 0 : 1}
                   />
