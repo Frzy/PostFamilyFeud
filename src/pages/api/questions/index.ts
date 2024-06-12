@@ -161,9 +161,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   })
 
   const validQuestions = validateQuestions(questions)
-
-  console.log(validQuestions)
-
   const questionResponse = {
     questions: validQuestions,
     page: currentPage,
