@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import * as cheerio from 'cheerio'
 
 import type { Question, Answer } from '@/types/types'
+import { validateQuestions } from '@/utility/functions'
 
 type QueryParams = {
   q?: string
@@ -9,8 +10,9 @@ type QueryParams = {
   page?: string
 }
 
-const FEUD_QUESTIONS_URL = 'https://www.familyfeudquestions.com/Index/question_vote'
-const FEUD_QUERY_URL = 'https://www.familyfeudquestions.com/Index/search'
+const FEUD_BASE_URL = 'https://www.familyfeudquestions.com'
+const FEUD_QUESTIONS_URL = `${FEUD_BASE_URL}/points-questions`
+const FEUD_QUERY_URL = `${FEUD_BASE_URL}/search`
 
 const NO_CAP_DICT = [
   'a',
@@ -55,8 +57,10 @@ function capitalize(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1)
 }
 function formatter(str: string) {
+  const newStr = str.replace(/^\d+.\s/, '')
+
   return capitalize(
-    str.toLowerCase().replace(/\b\w+(?:'\w+)*\b/g, (m) => {
+    newStr.toLowerCase().replace(/\b\w+(?:'\w+)*\b/g, (m) => {
       return NO_CAP_DICT.includes(m) ? m : capitalize(m)
     }),
   )
@@ -75,10 +79,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (q) {
     url = new URL(FEUD_QUERY_URL)
-    url.search = new URLSearchParams({ keyword: q, p: page ? page : '1' }).toString()
+    url.search = new URLSearchParams({ keyword: q }).toString()
   } else if (answerCount) {
-    url = new URL(FEUD_QUESTIONS_URL)
-    url.search = new URLSearchParams({ limit: answerCount, p: page ? page : '1' }).toString()
+    url = new URL(`${FEUD_BASE_URL}/questions-with-${answerCount}-answers`)
+    url.search = new URLSearchParams({ page: page ? page : '1' }).toString()
   } else {
     url = new URL(FEUD_QUESTIONS_URL)
   }
@@ -87,18 +91,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const body = await response.text()
   const questions: Question[] = []
   const $ = cheerio.load(body)
+  const currentPage = page ? parseInt(page) : 1
+  let totalPages = 1
 
-  $('.row.display .item').each(function () {
-    const text = $(this).find('h3').text()
+  $('.q-list li').each(function () {
+    const text = $(this).find('h5 > a').text()
     const answers: Answer[] = []
+    const tags: string[] = []
 
     $(this)
-      .find('.answer span')
+      .find('.ans span')
       .each(function () {
-        const answerLongText = $(this).text()
-        const [answerText, pointString] = answerLongText.split(/\s{3,}/)
-        if (!pointString) return
-        const match = pointString.match(/\d{1,}/)
+        const $badge = $(this).find('.badge')
+        const pointString = $badge.text()
+        $badge.remove()
+        const answerText = $(this).text()
+        const match = pointString ? pointString.match(/\d{1,}/) : '0'
         const points = match ? match[0] : '0'
 
         if (points && answerText.length) {
@@ -111,13 +119,56 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
       })
 
+    $(this)
+      .find('.tags a')
+      .each(function () {
+        const tag = $(this).text()
+        if (tag) tags.push(tag.toLowerCase())
+      })
+
     if (answers.length && text) {
       questions.push({
         text: formatter(sanatize(text)),
+        tags,
         answers,
       })
     }
   })
 
-  res.status(200).json(questions)
+  $('.pagination .page-item a').each(function () {
+    const $this = $(this)
+    const text = $this.text()
+    const href = $this.attr('href')
+
+    if (text.toLowerCase() === 'last') {
+      const urlParts = href?.split('?')
+
+      if (urlParts && urlParts[1]) {
+        const queryParams = new URLSearchParams(urlParts[1])
+        const newPage = queryParams.get('page')
+
+        if (newPage) {
+          const pageNumber = parseInt(newPage)
+
+          totalPages = Math.max(totalPages, isNaN(pageNumber) ? 1 : pageNumber)
+        }
+      }
+    } else {
+      const pageNumber = parseInt(text)
+
+      totalPages = Math.max(totalPages, isNaN(pageNumber) ? 1 : pageNumber)
+    }
+  })
+
+  const validQuestions = validateQuestions(questions)
+
+  console.log(validQuestions)
+
+  const questionResponse = {
+    questions: validQuestions,
+    page: currentPage,
+    totalPages,
+  }
+
+  res.status(200).json(questionResponse)
 }

@@ -17,6 +17,7 @@ export type Answer = {
 export type Question = {
   text: string
   answers: Answer[]
+  tags: string[]
 }
 
 export type TeamName = 'teamOne' | 'teamTwo'
@@ -38,4 +39,10 @@ export type Volume = {
   theme: number
   ding: number
   buzzer: number
+}
+
+export interface QuestionResponse {
+  questions: Question[]
+  page: number
+  totalPages: number
 }
