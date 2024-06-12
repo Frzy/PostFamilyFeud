@@ -20,6 +20,7 @@ import { debounce } from '@/utility/functions'
 
 const BASE_QUESTION: Question = {
   text: '',
+  tags: [],
   answers: [],
 }
 
