@@ -17,7 +17,7 @@ export type Answer = {
 export type Question = {
   text: string
   answers: Answer[]
-  tags: string[]
+  tags?: string[]
 }
 
 export type TeamName = 'teamOne' | 'teamTwo'
