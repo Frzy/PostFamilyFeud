@@ -1,0 +1,460 @@
+[
+  {
+    "text": "Name an Olympic sport you’d watch more often if it were played in the nude.",
+    "answers": [
+      { "text": "Volleyball", "points": 21 },
+      { "text": "Gymnastics", "points": 20 },
+      { "text": "Swimming", "points": 20 },
+      { "text": "Soccer", "points": 18 },
+      { "text": "Wrestling", "points": 7 },
+      { "text": "Tennis", "points": 5 },
+      { "text": "Track / Field", "points": 3 }
+    ]
+  },
+  {
+    "text": "Where might you hide something you wanted to smuggle into prison?",
+    "answers": [
+      { "text": "In a cake", "points": 31 },
+      { "text": "Up your butt", "points": 30 },
+      { "text": "Underwear", "points": 10 },
+      { "text": "Bra", "points": 9 },
+      { "text": "Shoe", "points": 5 },
+      { "text": "Socks", "points": 3 },
+      { "text": "Bribe / With guard", "points": 3 },
+      { "text": "Hair", "points": 2 }
+    ]
+  },
+  {
+    "text": "On which topic might a father give advice to his son?",
+    "answers": [
+      { "text": "Women / Relationships", "points": 48 },
+      { "text": "Jobs", "points": 21 },
+      { "text": "Personal finance", "points": 11 },
+      { "text": "Children / Family", "points": 6 },
+      { "text": "Drugs / Alcohol", "points": 4 },
+      { "text": "Driving", "points": 3 },
+      { "text": "Sports", "points": 3 }
+    ]
+  },
+  {
+    "text": "Name something a person on a diet might order at a restaurant.",
+    "answers": [
+      { "text": "Salad", "points": 35 },
+      { "text": "Fish", "points": 27 },
+      { "text": "Chicken", "points": 12 },
+      { "text": "Water", "points": 10 },
+      { "text": "Fruit / Veggies", "points": 7 },
+      { "text": "Eggs", "points": 3 }
+    ]
+  },
+  {
+    "text": "How many hours of sleep do you need each night to feel awake the next day?",
+    "answers": [
+      { "text": "8 Hours", "points": 29 },
+      { "text": "6 Hours", "points": 25 },
+      { "text": "7 Hours", "points": 21 },
+      { "text": "9 Hours", "points": 4 },
+      { "text": "5 Hours", "points": 4 },
+      { "text": "10 Hours", "points": 3 },
+      { "text": "4 Hours", "points": 3 }
+    ]
+  },
+  {
+    "text": "Name a language that makes anything sound sexy.",
+    "answers": [
+      { "text": "French", "points": 40 },
+      { "text": "Italian", "points": 21 },
+      { "text": "Spanish", "points": 11 },
+      { "text": "British / English", "points": 10 },
+      { "text": "Portuguese", "points": 9 },
+      { "text": "German", "points": 3 },
+      { "text": "Japanese", "points": 3 }
+    ]
+  },
+  {
+    "text": "Name a part of the body people see a plastic surgeon about.",
+    "answers": [
+      { "text": "Boobs", "points": 30 },
+      { "text": "Nose", "points": 18 },
+      { "text": "Belly", "points": 16 },
+      { "text": "Lips", "points": 12 },
+      { "text": "Butt", "points": 8 },
+      { "text": "Face / Forehead", "points": 6 }
+    ]
+  },
+  {
+    "text": "What's the first thing you would do if you inherited a million dollars?",
+    "answers": [
+      { "text": "Quit job", "points": 27 },
+      { "text": "New car", "points": 24 },
+      { "text": "New house", "points": 22 },
+      { "text": "Take a vacation", "points": 10 },
+      { "text": "New boat", "points": 4 },
+      { "text": "Pay off debt", "points": 4 },
+      { "text": "Invest", "points": 4 },
+      { "text": "Drugs", "points": 2 }
+    ]
+  },
+  {
+    "text": "Who do you really hope not to run into when you are out on a date?",
+    "answers": [
+      { "text": "Ex", "points": 28 },
+      { "text": "Co-worker / Boss", "points": 18 },
+      { "text": "Parent", "points": 11 },
+      { "text": "Friend", "points": 10 },
+      { "text": "Sibling", "points": 8 },
+      { "text": "Spouse", "points": 6 },
+      { "text": "Mugger", "points": 5 },
+      { "text": "Drunk", "points": 4 },
+      { "text": "Priest", "points": 2 }
+    ]
+  },
+  {
+    "text": "If you heard your bedroom door open as you made love, who would you really hope not to see when you looked up?",
+    "answers": [
+      { "text": "Your kid", "points": 63 },
+      { "text": "Your parent", "points": 12 },
+      { "text": "In-law", "points": 6 },
+      { "text": "Maid", "points": 4 },
+      { "text": "Robber", "points": 3 },
+      { "text": "Sibling", "points": 3 },
+      { "text": "Spouse", "points": 3 },
+      { "text": "Serial Killer", "points": 2 }
+    ]
+  },
+  {
+    "text": "Who is most likely to know a man's most embarrassing secret?",
+    "answers": [
+      { "text": "Romantic partner", "points": 33 },
+      { "text": "Parent", "points": 24 },
+      { "text": "Best friend", "points": 23 },
+      { "text": "Sibling", "points": 10 },
+      { "text": "His dog", "points": 3 },
+      { "text": "Doctor", "points": 3 }
+    ]
+  },
+  {
+    "text": "What might a woman do when she catches her man checking out another woman?",
+    "answers": [
+      { "text": "Hit him", "points": 19 },
+      { "text": "Yell / Call him on it", "points": 17 },
+      { "text": "Check her out too", "points": 15 },
+      { "text": "Dirty look", "points": 15 },
+      { "text": "Withhold sex", "points": 13 },
+      { "text": "Walk away", "points": 5 },
+      { "text": "Laugh", "points": 5 },
+      { "text": "Cry", "points": 3 },
+      { "text": "Beat up other woman", "points": 3 }
+    ]
+  },
+  {
+    "text": "If someone asked you out on a date, what's an excuse you might give if you weren't interested?",
+    "answers": [
+      { "text": "In a relationship", "points": 36 },
+      { "text": "Not interested", "points": 32 },
+      { "text": "Gay", "points": 17 },
+      { "text": "Busy", "points": 5 },
+      { "text": "Not dating right now", "points": 4 }
+    ]
+  },
+  {
+    "text": "Name something you do not want to do on a Sunday.",
+    "answers": [
+      { "text": "Wake up early", "points": 26 },
+      { "text": "Work", "points": 25 },
+      { "text": "Errands", "points": 14 },
+      { "text": "Chores", "points": 12 },
+      { "text": "Church", "points": 3 },
+      { "text": "Cook", "points": 3 },
+      { "text": "Anything", "points": 3 }
+    ]
+  },
+  {
+    "text": "Name a fruit that reminds you of a part of the human body.",
+    "answers": [
+      { "text": "Banana", "points": 33 },
+      { "text": "Peach", "points": 24 },
+      { "text": "Watermelon", "points": 18 },
+      { "text": "Cantaloupe", "points": 9 },
+      { "text": "Coconut", "points": 6 },
+      { "text": "Eggplant", "points": 4 },
+      { "text": "Grape", "points": 2 }
+    ]
+  },
+  {
+    "text": "Name an athlete who made the news for being involved in a big scandal.",
+    "answers": [
+      { "text": "Lance Armstrong", "points": 24 },
+      { "text": "Tiger Woods", "points": 23 },
+      { "text": "O.J. Simpson", "points": 22 },
+      { "text": "Barry Bonds", "points": 14 },
+      { "text": "Mike Tyson", "points": 4 },
+      { "text": "Colin Kaepernick", "points": 3 },
+      { "text": "Oscar Pistorius", "points": 3 },
+      { "text": "Michael Vick", "points": 3 }
+    ]
+  },
+  {
+    "text": "Name a place you might pick up a date who isn't interested in a serious relationship.",
+    "answers": [
+      { "text": "Bar", "points": 31 },
+      { "text": "Club", "points": 19 },
+      { "text": "Tinder", "points": 18 },
+      { "text": "College", "points": 13 },
+      { "text": "Party", "points": 10 },
+      { "text": "The mall", "points": 2 }
+    ]
+  },
+  {
+    "text": "Name a food you might buy from a cart at the park.",
+    "answers": [
+      { "text": "Ice cream", "points": 24 },
+      { "text": "Hot dog", "points": 19 },
+      { "text": "Pretzel", "points": 16 },
+      { "text": "Soft drink", "points": 12 },
+      { "text": "Water", "points": 9 },
+      { "text": "Churro", "points": 4 }
+    ]
+  },
+  {
+    "text": "Name the month in the year that has the most babies born.",
+    "answers": [
+      { "text": "November", "points": 26 },
+      { "text": "September", "points": 21 },
+      { "text": "March", "points": 18 },
+      { "text": "December", "points": 15 },
+      { "text": "June", "points": 7 },
+      { "text": "January", "points": 4 },
+      { "text": "July", "points": 4 }
+    ]
+  },
+  {
+    "text": "Name a reason people take out a loan.",
+    "answers": [
+      { "text": "Buy house", "points": 55 },
+      { "text": "Buy car", "points": 24 },
+      { "text": "Education", "points": 8 },
+      { "text": "Pay debt", "points": 4 },
+      { "text": "Start a business", "points": 3 },
+      { "text": "Gambling", "points": 2 }
+    ]
+  },
+  {
+    "text": "Name something that is often made out of rubber.",
+    "answers": [
+      { "text": "Tire", "points": 37 },
+      { "text": "Ball", "points": 21 },
+      { "text": "Rubber band", "points": 19 },
+      { "text": "Boots / Shoes", "points": 10 },
+      { "text": "Gloves", "points": 4 },
+      { "text": "Prophylactic", "points": 3 },
+      { "text": "Rubber chicken", "points": 3 },
+      { "text": "Eraser", "points": 2 }
+    ]
+  },
+  {
+    "text": "Name something people do when they try to get out of speeding tickets.",
+    "answers": [
+      { "text": "Cry", "points": 27 },
+      { "text": "Flirt", "points": 23 },
+      { "text": "Plead innocence / ignorance", "points": 12 },
+      { "text": "Offer money", "points": 11 },
+      { "text": "Ask for warning", "points": 8 },
+      { "text": "Be honest", "points": 8 },
+      { "text": "Drive away", "points": 4 },
+      { "text": "Ask for selfie", "points": 3 },
+      { "text": "Offer body", "points": 2 }
+    ]
+  },
+  {
+    "text": "Name a specific issue the Democrats and Republicans never seem to agree on.",
+    "answers": [
+      { "text": "Immigration", "points": 26 },
+      { "text": "Abortion", "points": 24 },
+      { "text": "Gay marriage", "points": 22 },
+      { "text": "Taxes", "points": 7 },
+      { "text": "Who should be President", "points": 5 },
+      { "text": "Budget", "points": 4 },
+      { "text": "Environment", "points": 3 },
+      { "text": "Education", "points": 3 }
+    ]
+  },
+  {
+    "text": "Other than a speed bump, name something that many drivers violate, even though it is meant to control traffic.",
+    "answers": [
+      { "text": "Stop sign", "points": 39 },
+      { "text": "Carpool lane", "points": 21 },
+      { "text": "Red light", "points": 16 },
+      { "text": "Yellow light", "points": 15 },
+      { "text": "Yield sign", "points": 4 }
+    ]
+  },
+  {
+    "text": "Name something you really hope your airplane pilot isn't doing.",
+    "answers": [
+      { "text": "Taking a nap", "points": 30 },
+      { "text": "Drugs", "points": 21 },
+      { "text": "Drinking", "points": 20 },
+      { "text": "Texting / On phone", "points": 9 },
+      { "text": "Stewardess", "points": 9 },
+      { "text": "Bathroom break", "points": 4 }
+    ]
+  },
+  {
+    "text": "Name a place that would be profitable to rob if you could get away with it.",
+    "answers": [
+      { "text": "Bank", "points": 37 },
+      { "text": "Jewelry store", "points": 28 },
+      { "text": "Casino", "points": 16 },
+      { "text": "Museum", "points": 6 },
+      { "text": "Car dealership", "points": 4 },
+      { "text": "Boutique", "points": 2 }
+    ]
+  },
+  {
+    "text": "Name a movie actress whose looks are her greatest asset.",
+    "answers": [
+      { "text": "Angelina Jolie", "points": 22 },
+      { "text": "Julia Roberts", "points": 20 },
+      { "text": "Halle Berry", "points": 19 },
+      { "text": "Scarlett Johansson", "points": 15 },
+      { "text": "Megan Fox", "points": 8 },
+      { "text": "Kate Upton", "points": 4 },
+      { "text": "Jessica Alba", "points": 4 }
+    ]
+  },
+  {
+    "text": "Name a profession that might sometimes require its members to be naked.",
+    "answers": [
+      { "text": "Stripper", "points": 61 },
+      { "text": "Model", "points": 19 },
+      { "text": "Acting", "points": 9 },
+      { "text": "Prostitute", "points": 7 }
+    ]
+  },
+  {
+    "text": "Name someone who was a world leader during World War 2.",
+    "answers": [
+      { "text": "Roosevelt", "points": 26 },
+      { "text": "Hitler", "points": 25 },
+      { "text": "Churchill", "points": 25 },
+      { "text": "Stalin", "points": 8 },
+      { "text": "Hirohito", "points": 4 },
+      { "text": "Mussolini", "points": 3 },
+      { "text": "Eisenhower", "points": 2 },
+      { "text": "Truman", "points": 2 },
+      { "text": "MacArthur", "points": 2 }
+    ]
+  },
+  {
+    "text": "Tell me something a man might do to get a woman 'in the mood'.",
+    "answers": [
+      { "text": "Kiss her", "points": 28 },
+      { "text": "Light candles", "points": 18 },
+      { "text": "Massage her", "points": 17 },
+      { "text": "Strip", "points": 17 },
+      { "text": "Turn down lights", "points": 8 },
+      { "text": "Bring her flowers", "points": 4 },
+      { "text": "Cook for her", "points": 4 }
+    ]
+  },
+  {
+    "text": "Name a specific body part that might get blurred on TV.",
+    "answers": [
+      { "text": "Boobs", "points": 24 },
+      { "text": "Male genitalia", "points": 21 },
+      { "text": "Female genitalia", "points": 20 },
+      { "text": "Butt", "points": 10 },
+      { "text": "Middle finger", "points": 6 },
+      { "text": "Mouth", "points": 2 }
+    ]
+  },
+  {
+    "text": "Name something that adults are afraid of, even though they should know better.",
+    "answers": [
+      { "text": "Ghosts", "points": 23 },
+      { "text": "Monsters", "points": 20 },
+      { "text": "The dark", "points": 17 },
+      { "text": "Aliens", "points": 14 },
+      { "text": "The dentist", "points": 10 },
+      { "text": "Taxes", "points": 4 }
+    ]
+  },
+  {
+    "text": "Name a gift you can pick up at the last minute.",
+    "answers": [
+      { "text": "Gift certificate", "points": 22 },
+      { "text": "Cash", "points": 20 },
+      { "text": "Flowers", "points": 19 },
+      { "text": "Book", "points": 6 },
+      { "text": "Candy", "points": 6 },
+      { "text": "Liquor", "points": 4 },
+      { "text": "Card", "points": 2 }
+    ]
+  },
+  {
+    "text": "Name the first letter of a word that's likely to be bleeped on TV.",
+    "answers": [
+      { "text": "F", "points": 49 },
+      { "text": "S", "points": 25 },
+      { "text": "C", "points": 11 },
+      { "text": "M", "points": 3 },
+      { "text": "H", "points": 3 },
+      { "text": "P", "points": 3 },
+      { "text": "T", "points": 2 },
+      { "text": "D", "points": 2 }
+    ]
+  },
+  {
+    "text": "Name a holiday kids enjoy more than adults.",
+    "answers": [
+      { "text": "Christmas", "points": 40 },
+      { "text": "Birthdays", "points": 27 },
+      { "text": "Halloween", "points": 23 },
+      { "text": "Easter", "points": 2 },
+      { "text": "Christmas Eve", "points": 2 }
+    ]
+  },
+  {
+    "text": "Name someone who ran for U.S. President and did not win.",
+    "answers": [
+      { "text": "Hilary Clinton", "points": 56 },
+      { "text": "Al Gore", "points": 24 },
+      { "text": "Bernie Sanders", "points": 5 },
+      { "text": "Thomas E. Dewey", "points": 5 },
+      { "text": "Ralph Nader", "points": 3 },
+      { "text": "John McCain", "points": 2 }
+    ]
+  },
+  {
+    "text": "Name something that you probably shouldn't send in an email.",
+    "answers": [
+      { "text": "Naked pictures", "points": 34 },
+      { "text": "Password", "points": 16 },
+      { "text": "Social Security Number", "points": 13 },
+      { "text": "Virus", "points": 10 },
+      { "text": "Money", "points": 5 }
+    ]
+  },
+  {
+    "text": "Name a word or phrase that contains the word 'strip'.",
+    "answers": [
+      { "text": "Stripper", "points": 37 },
+      { "text": "Strip club", "points": 33 },
+      { "text": "Strip mall", "points": 12 },
+      { "text": "Strip tease", "points": 8 },
+      { "text": "Air strip", "points": 3 },
+      { "text": "Landing strip", "points": 3 }
+    ]
+  },
+  {
+    "text": "Name something specific you're afraid will happen to you on Friday the 13th",
+    "answers": [
+      { "text": "Car Accident", "points": 46 },
+      { "text": "Black Cat", "points": 16 },
+      { "text": "Fall Down", "points": 8 },
+      { "text": "Break Mirror", "points": 7 },
+      { "text": "Die", "points": 7 }
+    ]
+  }
+]

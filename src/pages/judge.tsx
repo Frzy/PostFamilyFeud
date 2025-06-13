@@ -91,7 +91,7 @@ export default function Judge() {
         <Question question={question.text} onVisibilityChange={handleQuestionVisibilityChange} />
         <Strikes strikes={game.strikes} onChange={handleStrikeChange} />
         <Answers
-          answers={question.answers}
+          answers={question.answers.slice(0, 8)}
           roundMode={question.roundMode}
           reveal={revealQuestion || game.strikes === 4 || hasWinner}
           onRevealChange={handleRevealChange}
@@ -115,7 +115,7 @@ export default function Judge() {
               onVisibilityChange={handleQuestionVisibilityChange}
             />
             <Answers
-              answers={question.answers}
+              answers={question.answers.slice(0, 8)}
               roundMode={question.roundMode}
               reveal={revealQuestion || game.strikes === 4 || hasWinner}
               onRevealChange={handleRevealChange}

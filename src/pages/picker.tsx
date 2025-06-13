@@ -3,7 +3,6 @@ import * as Ably from 'ably'
 import Head from 'next/head'
 import { configureAbly } from '@ably-labs/react-hooks'
 import { ABLY_EVENTS, GAME_CHANNEL_KEY, MUSIC, ROUND_MODE } from '@/utility/constants'
-
 import {
   Alert,
   Box,
@@ -33,9 +32,12 @@ import store from 'store2'
 import { getGameChannel } from '@/utility/functions'
 import GameChannelDialog from '@/components/GameChannelDialog'
 
+import FileQuestions from '@/utility/questions.json'
+
 enum PICKER_MODE {
   BY_TERM = 'term',
   BY_ANSWERS = 'answer',
+  BY_FILE = 'file',
 }
 enum PICKER_VIEW {
   SEARCH = 'search',
@@ -125,6 +127,21 @@ export default function Picker() {
       params = { ...params, q: searchTerm }
     } else if (mode === PICKER_MODE.BY_ANSWERS && numAnswer !== NUM_ANSWER.ANY) {
       params = { ...params, answerCount: numAnswer }
+    } else if (mode === PICKER_MODE.BY_FILE) {
+      const questions: ListQuestion[] = FileQuestions.map((q) => {
+        return {
+          ...q,
+          answers: q.answers.map((a) => ({
+            ...a,
+            isAnswered: false,
+            showAnswer: false,
+          })),
+          roundMode: ROUND_MODE.NORMAL,
+        }
+      })
+
+      setQuesitonPool(questions)
+      return
     }
 
     fetchQuestions(params)
@@ -277,8 +294,9 @@ export default function Picker() {
                         fullWidth
                         size='small'
                       >
-                        <ToggleButton value={PICKER_MODE.BY_ANSWERS}>By # of Answers</ToggleButton>
-                        <ToggleButton value={PICKER_MODE.BY_TERM}>By Search Term</ToggleButton>
+                        <ToggleButton value={PICKER_MODE.BY_ANSWERS}>By #</ToggleButton>
+                        <ToggleButton value={PICKER_MODE.BY_TERM}>Search</ToggleButton>
+                        <ToggleButton value={PICKER_MODE.BY_FILE}>From File</ToggleButton>
                       </ToggleButtonGroup>
                       {mode === PICKER_MODE.BY_TERM && (
                         <TextField
@@ -317,6 +335,7 @@ export default function Picker() {
                       >
                         <ToggleButton value={PICKER_MODE.BY_ANSWERS}>By # of Answers</ToggleButton>
                         <ToggleButton value={PICKER_MODE.BY_TERM}>By Search Term</ToggleButton>
+                        <ToggleButton value={PICKER_MODE.BY_FILE}>From File</ToggleButton>
                       </ToggleButtonGroup>
                       {mode === PICKER_MODE.BY_TERM && (
                         <TextField
