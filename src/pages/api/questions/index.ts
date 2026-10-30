@@ -87,22 +87,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   switch (answerCount) {
     case '3':
-      data = await getQuestions  ('3', pageNumber)
+      data = await getQuestions  (3, pageNumber)
       break;
     case '4':
-      data =await getQuestions('4', pageNumber)
+      data =await getQuestions(4, pageNumber)
 
       break;
     case '5':
-      data =await getQuestions('5', pageNumber)
+      data =await getQuestions(5, pageNumber)
 
       break;
     case '6':
-      data =await getQuestions('6', pageNumber)
+      data =await getQuestions(6, pageNumber)
 
       break; 
     default:
-      data =await getQuestions('7', pageNumber)
+      data =await getQuestions(7, pageNumber)
 
       break;
   }
