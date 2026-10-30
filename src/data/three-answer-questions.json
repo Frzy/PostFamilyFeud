@@ -1,0 +1,722 @@
+[
+  {
+    "text": "Name A Number That's Associated With Being Lucky Or Unlucky",
+    "answers": [
+      { "text": "7", "points": 68 },
+      { "text": "13", "points": 26 },
+      { "text": "3", "points": 5 }
+    ]
+  },
+  {
+    "text": "Name The Most Used Piece Of Furniture In A House.",
+    "answers": [
+      { "text": "Couch", "points": 55 },
+      { "text": "Bed", "points": 23 },
+      { "text": "Arm Chair", "points": 15 }
+    ]
+  },
+  {
+    "text": "Name A Job In Which An Attractive Person Probably Makes Better Tips.",
+    "answers": [
+      { "text": "Server", "points": 65 },
+      { "text": "Exotic Dancer", "points": 19 },
+      { "text": "Bartender", "points": 13 }
+    ]
+  },
+  {
+    "text": "Name A Prop used By Tap Dancers",
+    "answers": [
+      { "text": "Cane", "points": 65 },
+      { "text": "Top Hat", "points": 28 },
+      { "text": "Baton", "points": 5 }
+    ]
+  },
+  {
+    "text": "If You Drew Homer Simpson's Name In A Secret Santa Exchange, What Would You Buy Him?",
+    "answers": [
+      { "text": "Beer", "points": 67 },
+      { "text": "Donuts", "points": 24 },
+      { "text": "Bowling Ball", "points": 5 }
+    ]
+  },
+  {
+    "text": "Name Something You Do To An Item Before Giving It As A Gift",
+    "answers": [
+      { "text": "Wrap It", "points": 61 },
+      { "text": "Remove Price Tag", "points": 27 },
+      { "text": "Buy It", "points": 4 }
+    ]
+  },
+  {
+    "text": "Name A Place Where It Might Be Romantic To Get Stranded With Your Partner",
+    "answers": [
+      { "text": "Island/Beach", "points": 61 },
+      { "text": "Park", "points": 28 },
+      { "text": "Cabin/Lodge", "points": 6 }
+    ]
+  },
+  {
+    "text": "Name A Good Gift For Someone Who Is Always Late.",
+    "answers": [
+      { "text": "Watch", "points": 58 },
+      { "text": "Alarm Clock", "points": 34 },
+      { "text": "Calendar", "points": 3 }
+    ]
+  },
+  {
+    "text": "Why Might A Family Move Into A Bigger House?",
+    "answers": [
+      { "text": "Family Has Grown", "points": 61 },
+      { "text": "Want More Space", "points": 33 },
+      { "text": "Can Afford More", "points": 5 }
+    ]
+  },
+  {
+    "text": "Other Than Movie Tickets, Name Something A Crowded Movie Theatre Might Run Out Of.",
+    "answers": [
+      { "text": "Popcorn", "points": 51 },
+      { "text": "Space", "points": 30 },
+      { "text": "Candy", "points": 8 }
+    ]
+  },
+  {
+    "text": "Name Something You Should Probably Book Ahead Of Time If You're Going On Vacation.",
+    "answers": [
+      { "text": "Hotel", "points": 73 },
+      { "text": "Flight", "points": 23 },
+      { "text": "Car", "points": 3 }
+    ]
+  },
+  {
+    "text": "Name Something People Bet On",
+    "answers": [
+      { "text": "Horses Races", "points": 68 },
+      { "text": "Sports", "points": 20 },
+      { "text": "Card Games", "points": 10 }
+    ]
+  },
+  {
+    "text": "Name A Character Who's Known For Almost Ruining Christmas.",
+    "answers": [
+      { "text": "Grinch", "points": 67 },
+      { "text": "Ebenezer Scrooge", "points": 28 },
+      { "text": "Charlie Brown", "points": 4 }
+    ]
+  },
+  {
+    "text": "Name A City Where You'd Hate The Long Commute To Work.",
+    "answers": [
+      { "text": "New York City", "points": 53 },
+      { "text": "Los Angeles", "points": 21 },
+      { "text": "Chicago", "points": 18 }
+    ]
+  },
+  {
+    "text": "Name Something That's Not Allowed In Some Hotels.",
+    "answers": [
+      { "text": "Pets", "points": 61 },
+      { "text": "Smoking", "points": 29 },
+      { "text": "Children", "points": 5 }
+    ]
+  },
+  {
+    "text": "Name Something That Might Happen If You Eat While Driving.",
+    "answers": [
+      { "text": "Crash", "points": 71 },
+      { "text": "Spill", "points": 17 },
+      { "text": "Choke", "points": 11 }
+    ]
+  },
+  {
+    "text": "If Adults Trick Or Treated, What Might They Request Instead Of Candy?",
+    "answers": [
+      { "text": "Money", "points": 74 },
+      { "text": "Alcohol", "points": 17 },
+      { "text": "Cigarettes", "points": 4 }
+    ]
+  },
+  {
+    "text": "Name A Word Or Phrase Used For Cooking On The Grill",
+    "answers": [
+      { "text": "Barbecue", "points": 64 },
+      { "text": "Grilling", "points": 30 },
+      { "text": "Cookout", "points": 5 }
+    ]
+  },
+  {
+    "text": "What Might You Ask To Borrow From Someone At The Laundromat?",
+    "answers": [
+      { "text": "Detergent", "points": 69 },
+      { "text": "Change", "points": 24 },
+      { "text": "Dryer Sheets", "points": 6 }
+    ]
+  },
+  {
+    "text": "Which Festive Holiday Was More Fun When You Were A Kid?",
+    "answers": [
+      { "text": "Christmas", "points": 51 },
+      { "text": "Halloween", "points": 19 },
+      { "text": "Easter", "points": 16 }
+    ]
+  },
+  {
+    "text": "What Would You Be Surprised To Hear That A Married Couple Does Separately?",
+    "answers": [
+      { "text": "Sleep", "points": 59 },
+      { "text": "Vacation", "points": 16 },
+      { "text": "Eat Meals", "points": 13 }
+    ]
+  },
+  {
+    "text": "Name A Reason You Wouldn't Want To Live Next Door To A Movie Star",
+    "answers": [
+      { "text": "Paparazzi", "points": 66 },
+      { "text": "Loud Parties", "points": 19 },
+      { "text": "Fans", "points": 9 }
+    ]
+  },
+  {
+    "text": "On A Resume, What Might A Person Claim They Can Do Quickly?",
+    "answers": [
+      { "text": "Type", "points": 53 },
+      { "text": "Learn", "points": 21 },
+      { "text": "Finish Tasks", "points": 12 }
+    ]
+  },
+  {
+    "text": "Name Something That Parent Of A Baby Is Constantly Listening For",
+    "answers": [
+      { "text": "Crying", "points": 62 },
+      { "text": "Breathing", "points": 32 },
+      { "text": "First Words", "points": 5 }
+    ]
+  },
+  {
+    "text": "Other Than Boxing, Name A Sport In Which You're Likely To See Athletes Fighting",
+    "answers": [
+      { "text": "Hockey", "points": 62 },
+      { "text": "Wrestling", "points": 28 },
+      { "text": "Football", "points": 8 }
+    ]
+  },
+  {
+    "text": "Name Something Nice You Get Sick Of Saying During The Holidays",
+    "answers": [
+      { "text": "Merry Christmas", "points": 51 },
+      { "text": "Thank You", "points": 22 },
+      { "text": "Great To See You", "points": 16 }
+    ]
+  },
+  {
+    "text": "Name A Place Where People Wear Very Little Clothing During The Winter",
+    "answers": [
+      { "text": "Vacation", "points": 64 },
+      { "text": "Home", "points": 13 },
+      { "text": "Gym", "points": 9 }
+    ]
+  },
+  {
+    "text": "Name A Phrase That Often Appears In Children'S Stories",
+    "answers": [
+      { "text": "Once Upon A Time", "points": 79 },
+      { "text": "The End", "points": 10 },
+      { "text": "Happily Ever After", "points": 9 }
+    ]
+  },
+  {
+    "text": "What Do People Say At Halloween That Would Be Inappropriate To Hear At Christmas?",
+    "answers": [
+      { "text": "Trick Or Treat", "points": 67 },
+      { "text": "Boo", "points": 28 },
+      { "text": "Happy Halloween", "points": 4 }
+    ]
+  },
+  {
+    "text": "Name A Drink Usually Associated With Christmas",
+    "answers": [
+      { "text": "Egg Nog", "points": 53 },
+      { "text": "Cider", "points": 21 },
+      { "text": "Hot Chocolate", "points": 16 }
+    ]
+  },
+  {
+    "text": "Name Something Tha Can Be Pumped",
+    "answers": [
+      { "text": "Gas", "points": 58 },
+      { "text": "Tire", "points": 24 },
+      { "text": "Iron", "points": 8 }
+    ]
+  },
+  {
+    "text": "Other Than Illness, Name An Acceptable Excuse For Missing Work.",
+    "answers": [
+      { "text": "Funeral", "points": 61 },
+      { "text": "Car Trouble", "points": 30 },
+      { "text": "Jury Duty", "points": 8 }
+    ]
+  },
+  {
+    "text": "Who In Your Life Is Most Likely To Brad About You?",
+    "answers": [
+      { "text": "Parent", "points": 60 },
+      { "text": "Partner", "points": 24 },
+      { "text": "Kids", "points": 4 }
+    ]
+  },
+  {
+    "text": "We Asked 100 Wives: Name A Place Where You Wouldn't Want Your Husband To Go With His Buddies.",
+    "answers": [
+      { "text": "Gentleman's Club", "points": 65 },
+      { "text": "The Bar", "points": 31 },
+      { "text": "Las Vegas", "points": 3 }
+    ]
+  },
+  {
+    "text": "Name A Crime That Some People Probably Commit Every Day.",
+    "answers": [
+      { "text": "Speeding", "points": 62 },
+      { "text": "Jaywalking", "points": 18 },
+      { "text": "Littering", "points": 18 }
+    ]
+  },
+  {
+    "text": "Name Something A Grown Woman Might Lie About, But A Young Girl Wouldn't",
+    "answers": [
+      { "text": "Age", "points": 61 },
+      { "text": "Weight", "points": 28 },
+      { "text": "Love Life", "points": 9 }
+    ]
+  },
+  {
+    "text": "Name A Decoration You Might Find Inside A Mexican Restaurant",
+    "answers": [
+      { "text": "Sombrero", "points": 58 },
+      { "text": "Pinata", "points": 22 },
+      { "text": "Maracas", "points": 6 }
+    ]
+  },
+  {
+    "text": "What Might You See Inside A Bag Of Chips That Would Make You Stop Eating Them?",
+    "answers": [
+      { "text": "Hair", "points": 63 },
+      { "text": "Bug", "points": 15 },
+      { "text": "Mold", "points": 9 }
+    ]
+  },
+  {
+    "text": "Name Something Tourists Point Up At",
+    "answers": [
+      { "text": "Tall Buildings", "points": 68 },
+      { "text": "Statues/ Monuments", "points": 14 },
+      { "text": "Mountains", "points": 6 }
+    ]
+  },
+  {
+    "text": "What Do Some People Do Immediately After Breaking Up, And Others Take Time To Do?",
+    "answers": [
+      { "text": "Date Again", "points": 55 },
+      { "text": "Mourn", "points": 29 },
+      { "text": "Move On", "points": 11 }
+    ]
+  },
+  {
+    "text": "Name Something Considerate That People Often Do For You In An Elevator",
+    "answers": [
+      { "text": "Hold Door", "points": 51 },
+      { "text": "Push Button", "points": 28 },
+      { "text": "Move Over", "points": 16 }
+    ]
+  },
+  {
+    "text": "If You Live In The Country, Name A Type Of Lights That You Don't See At Night.",
+    "answers": [
+      { "text": "Street Lights", "points": 64 },
+      { "text": "Traffic", "points": 21 },
+      { "text": "Neon Light", "points": 10 }
+    ]
+  },
+  {
+    "text": "Name Something You Might Add Milk To In The Morning.",
+    "answers": [
+      { "text": "Cold Cereal", "points": 67 },
+      { "text": "Coffee", "points": 17 },
+      { "text": "Oatmeal", "points": 3 }
+    ]
+  },
+  {
+    "text": "Name Something Children Wear, But Adults Don't",
+    "answers": [
+      { "text": "Diaper", "points": 58 },
+      { "text": "Bib", "points": 16 },
+      { "text": "Overalls", "points": 12 }
+    ]
+  },
+  {
+    "text": "Name Something That A Demanding Bride May Ask Her Maid-Of_Honor To do That Could End Their Friendship.",
+    "answers": [
+      { "text": "Wear An Ugly Dress", "points": 46 },
+      { "text": "Lie For Her", "points": 32 },
+      { "text": "Pay For Dress", "points": 17 }
+    ]
+  },
+  {
+    "text": "Name A Profession Where You Might Have A Dog For A Sidekick",
+    "answers": [
+      { "text": "Police Officer", "points": 52 },
+      { "text": "Firefighter", "points": 26 },
+      { "text": "Performer", "points": 9 }
+    ]
+  },
+  {
+    "text": "We Asked 100 Single People: Who In Your Life Gives You The Most Pressure To Settle Down and Marry?",
+    "answers": [
+      { "text": "Mom", "points": 55 },
+      { "text": "Friends", "points": 24 },
+      { "text": "Person I'm Dating", "points": 8 }
+    ]
+  },
+  {
+    "text": "Name A Form Of Communication That Few People Use Anymore.",
+    "answers": [
+      { "text": "Written Letters", "points": 55 },
+      { "text": "Telegraph", "points": 31 },
+      { "text": "Phone", "points": 6 }
+    ]
+  },
+  {
+    "text": "Name A Profession That Has To Worry About Getting Sued",
+    "answers": [
+      { "text": "Doctor", "points": 54 },
+      { "text": "Lawyer", "points": 31 },
+      { "text": "Police Officer", "points": 8 }
+    ]
+  },
+  {
+    "text": "Name Something You Need To Eat Before It Melts.",
+    "answers": [
+      { "text": "Ice Cream", "points": 56 },
+      { "text": "Chocolate", "points": 24 },
+      { "text": "Popsicle", "points": 12 }
+    ]
+  },
+  {
+    "text": "Name A prize You May Win From A Carnival Game.",
+    "answers": [
+      { "text": "Stuffed Animal", "points": 75 },
+      { "text": "Gold Fish", "points": 11 },
+      { "text": "Poster", "points": 6 }
+    ]
+  },
+  {
+    "text": "Name Something Drivers Often Do If They Spot A Police Car Up Ahead",
+    "answers": [
+      { "text": "Slow Down", "points": 71 },
+      { "text": "Move Over", "points": 12 },
+      { "text": "Put Seatbelt On", "points": 4 }
+    ]
+  },
+  {
+    "text": "Name An Animal That You See More Of In The City.",
+    "answers": [
+      { "text": "Cat", "points": 63 },
+      { "text": "Pigeon", "points": 18 },
+      { "text": "Rat", "points": 15 }
+    ]
+  },
+  {
+    "text": "Name Something Kids Might Collect From The Beach",
+    "answers": [
+      { "text": "Shells", "points": 68 },
+      { "text": "Sand", "points": 15 },
+      { "text": "Rocks", "points": 15 }
+    ]
+  },
+  {
+    "text": "Name Something It Would Be Rude Not To Do When Being Introduced To A Stranger",
+    "answers": [
+      { "text": "Shake Hands", "points": 56 },
+      { "text": "Smile", "points": 23 },
+      { "text": "Say Hello", "points": 9 }
+    ]
+  },
+  {
+    "text": "Name A Skill That's More Important For Teens To Learn Today, Than Previously",
+    "answers": [
+      { "text": "Computer Skills", "points": 63 },
+      { "text": "Driving", "points": 30 },
+      { "text": "Second Language", "points": 3 }
+    ]
+  },
+  {
+    "text": "Name Something People Wear To Avoid A Sunburn",
+    "answers": [
+      { "text": "Sunscreen", "points": 55 },
+      { "text": "Hat", "points": 33 },
+      { "text": "Shirt/Coverup", "points": 5 }
+    ]
+  },
+  {
+    "text": "Name A Specific Person You'd Ask To Help You Move If You Were In A Jam.",
+    "answers": [
+      { "text": "Friend", "points": 42 },
+      { "text": "Parent", "points": 38 },
+      { "text": "Sibling", "points": 18 }
+    ]
+  },
+  {
+    "text": "Name Something Parents Of Twins Do That Makes Their Children Seem Even More Similar.",
+    "answers": [
+      { "text": "Dress Alike", "points": 67 },
+      { "text": "Hair Style", "points": 21 },
+      { "text": "Similar Names", "points": 11 }
+    ]
+  },
+  {
+    "text": "Other Than To Buy Books, Why Might Someone Go To A Bookstore?",
+    "answers": [
+      { "text": "Read", "points": 58 },
+      { "text": "Coffee", "points": 31 },
+      { "text": "Socialize", "points": 5 }
+    ]
+  },
+  {
+    "text": "What Do You Find Out About A Town By Reading Signs On The Side Of The Road?",
+    "answers": [
+      { "text": "Population", "points": 60 },
+      { "text": "Town Name", "points": 30 },
+      { "text": "Speed Limit", "points": 8 }
+    ]
+  },
+  {
+    "text": "Name A Profession That's Only Successful If People Are Laughing At Them.",
+    "answers": [
+      { "text": "Comedian", "points": 63 },
+      { "text": "Clown", "points": 31 },
+      { "text": "Sports Mascot", "points": 3 }
+    ]
+  },
+  {
+    "text": "Tell Me A Reason People Give For Wearing Black.",
+    "answers": [
+      { "text": "Funeral", "points": 59 },
+      { "text": "Slimming", "points": 27 },
+      { "text": "Style", "points": 12 }
+    ]
+  },
+  {
+    "text": "If An Alien Gave You A Guided Tour Of Outer Space, What Would Be Must-See Stops?",
+    "answers": [
+      { "text": "Other Planets", "points": 50 },
+      { "text": "Moon", "points": 22 },
+      { "text": "Sun", "points": 16 }
+    ]
+  },
+  {
+    "text": "What Might A Parent Videotape Their Child Doing Around The Christmas Holiday?",
+    "answers": [
+      { "text": "Opening Presents", "points": 65 },
+      { "text": "Being In Pageant", "points": 27 },
+      { "text": "Visiting Santa", "points": 5 }
+    ]
+  },
+  {
+    "text": "What Is A Color That You Would See On A Country's Flag?",
+    "answers": [
+      { "text": "Red", "points": 70 },
+      { "text": "Blue", "points": 19 },
+      { "text": "White", "points": 3 }
+    ]
+  },
+  {
+    "text": "Name A Song That Has “Christmas” In The Title",
+    "answers": [
+      { "text": "White Christmas", "points": 55 },
+      { "text": "Oh Christmas Tree", "points": 21 },
+      { "text": "Wish You Merry Xmas", "points": 18 }
+    ]
+  },
+  {
+    "text": "Name Something Santa Does That You wouldn't want Your House guest To Do.",
+    "answers": [
+      { "text": "Come Down Chimney", "points": 59 },
+      { "text": "Eat Your Coookies", "points": 24 },
+      { "text": "Arrive Late at Night", "points": 13 }
+    ]
+  },
+  {
+    "text": "Other Than Displays Of Affection, Name Something You Wish Couples Wouldn't Do In Public.",
+    "answers": [
+      { "text": "Fight", "points": 68 },
+      { "text": "Feed Each Other", "points": 13 },
+      { "text": "Baby Talk", "points": 5 }
+    ]
+  },
+  {
+    "text": "Name A Reason You Might Dread Going To A New Year's Party At A Club.",
+    "answers": [
+      { "text": "Crowded", "points": 53 },
+      { "text": "No Date", "points": 21 },
+      { "text": "Don't Drink", "points": 18 }
+    ]
+  },
+  {
+    "text": "Which Color Would You Be Surprised To See A Bride Wearing On Her Wedding Day?",
+    "answers": [
+      { "text": "Black", "points": 74 },
+      { "text": "Red", "points": 21 },
+      { "text": "Green", "points": 4 }
+    ]
+  },
+  {
+    "text": "Name Something You'D Hate To Find Floating In Your Coffee",
+    "answers": [
+      { "text": "Bug", "points": 54 },
+      { "text": "Hair", "points": 29 },
+      { "text": "Food Crumb", "points": 8 }
+    ]
+  },
+  {
+    "text": "Name Something Santa Does, That You Wouldn't Want Your House Guests To Do.",
+    "answers": [
+      { "text": "Come Down Chimney", "points": 59 },
+      { "text": "Eat Your Cookies", "points": 24 },
+      { "text": "Arrive Late At Nite", "points": 13 }
+    ]
+  },
+  {
+    "text": "Name A Specific Night Of The Year That You Hope To Be Kissed.",
+    "answers": [
+      { "text": "New Year Eve's", "points": 48 },
+      { "text": "Valentine's", "points": 25 },
+      { "text": "Christmas", "points": 13 }
+    ]
+  },
+  {
+    "text": "Name Something That You Can Get For Free At A Casino.",
+    "answers": [
+      { "text": "Drinks", "points": 49 },
+      { "text": "Food", "points": 33 },
+      { "text": "Entertainment", "points": 5 }
+    ]
+  },
+  {
+    "text": "Name A Person Who You'd Never Trust to Set You Up On A Blind Date",
+    "answers": [
+      { "text": "Mother", "points": 66 },
+      { "text": "Sibling", "points": 20 },
+      { "text": "Ex", "points": 9 }
+    ]
+  },
+  {
+    "text": "If You See Pink Frosting On A Cake, What Flavor Would You Expect It To Be",
+    "answers": [
+      { "text": "Strawberry", "points": 73 },
+      { "text": "Cherry", "points": 16 },
+      { "text": "Raspberry", "points": 10 }
+    ]
+  },
+  {
+    "text": "Name Something You'd Take Camping But Be Arrested For If You Brought It To A Bank.",
+    "answers": [
+      { "text": "Gun", "points": 49 },
+      { "text": "Hatchet", "points": 34 },
+      { "text": "Alcohol", "points": 17 }
+    ]
+  },
+  {
+    "text": "Before Visiting A New City, Name Something For Which You Might Get A Recommendation.",
+    "answers": [
+      { "text": "Places To Stay", "points": 56 },
+      { "text": "Restaurant", "points": 24 },
+      { "text": "Attraction", "points": 7 }
+    ]
+  },
+  {
+    "text": "Name A Reason Why It's Hard To Slow Dance With A Ghost.",
+    "answers": [
+      { "text": "Can't See Them", "points": 66 },
+      { "text": "Nothing To Hold", "points": 17 },
+      { "text": "Can't Lead", "points": 16 }
+    ]
+  },
+  {
+    "text": "Name A Decoration You Might Find Inside A Mexican Restaurant.",
+    "answers": [
+      { "text": "Sombrero", "points": 58 },
+      { "text": "Pinata", "points": 22 },
+      { "text": "Maracas", "points": 6 }
+    ]
+  },
+  {
+    "text": "Name Something A Dad Would Look Silly Borrowing From His Child At The Bowling Alley.",
+    "answers": [
+      { "text": "Shoes", "points": 64 },
+      { "text": "Lightweight Ball", "points": 19 },
+      { "text": "Money", "points": 15 }
+    ]
+  },
+  {
+    "text": "Name A Famous Robert Who Many Women Consider Handsome.",
+    "answers": [
+      { "text": "Robert Redford", "points": 51 },
+      { "text": "Robert De Niro", "points": 34 },
+      { "text": "Robert Kennedy", "points": 4 }
+    ]
+  },
+  {
+    "text": "Name An Article Of Clothing That Most People Have 10 Of.",
+    "answers": [
+      { "text": "Pairs Of Shoes", "points": 57 },
+      { "text": "Pairs Of Socks", "points": 21 },
+      { "text": "Shirts", "points": 17 }
+    ]
+  },
+  {
+    "text": "Name Something A Man Might Do At The Gym To Impress A Woman.",
+    "answers": [
+      { "text": "Lift Weights", "points": 55 },
+      { "text": "Flex", "points": 24 },
+      { "text": "Take Off Shirt", "points": 10 }
+    ]
+  },
+  {
+    "text": "Name Something People Wait In Line For On Hot Days",
+    "answers": [
+      { "text": "Ice Cream", "points": 66 },
+      { "text": "Cold Drinks", "points": 23 },
+      { "text": "Water Park", "points": 10 }
+    ]
+  },
+  {
+    "text": "Name Something A Contestant In A Beauty Pageant Might Wear",
+    "answers": [
+      { "text": "Bathing Suit", "points": 56 },
+      { "text": "Gown", "points": 39 },
+      { "text": "Makeup", "points": 2 }
+    ]
+  },
+  {
+    "text": "Name A Kind Of Cookie People Love To Dunk In Milk",
+    "answers": [
+      { "text": "Chocolate Chip", "points": 54 },
+      { "text": "Oreo", "points": 42 },
+      { "text": "Oatmeal", "points": 5 }
+    ]
+  },
+  {
+    "text": "Name A Night Of The Week When People Stay Up Later Than Usual",
+    "answers": [
+      { "text": "Friday", "points": 52 },
+      { "text": "Saturday", "points": 43 },
+      { "text": "Sunday", "points": 3 }
+    ]
+  },
+  {
+    "text": "If There Was An Award For “Loudest In The Zoo,” Which Animal Would Win It?",
+    "answers": [
+      { "text": "Lion", "points": 41 },
+      { "text": "Elephant", "points": 34 },
+      { "text": "Monkey", "points": 19 }
+    ]
+  }
+]

@@ -1,3 +1,5 @@
+'use client'
+
 import * as React from 'react'
 
 import type { Answer } from '@/types/types'
@@ -76,7 +78,7 @@ export default function Answers({
             <ListItem key={i} divider disablePadding>
               <ListItemButton disabled={isAnswerDisabled(a)} onClick={toggleAnswer(i)}>
                 <ListItemIcon>
-                  <Checkbox checked={a.showAnswer} edge='start' tabIndex={-1} disableRipple />
+                  <Checkbox checked={!!a.showAnswer} edge='start' tabIndex={-1} disableRipple />
                 </ListItemIcon>
                 <ListItemText sx={{ flexGrow: 1 }}>{a.text}</ListItemText>
                 <ListItemText sx={{ flex: '0 0 auto' }}>{a.points}</ListItemText>
@@ -87,7 +89,7 @@ export default function Answers({
         <Box p={1} display='flex' justifyContent='space-between' alignItems='center'>
           <FormControlLabel
             sx={{ pl: 1.5 }}
-            control={<Switch checked={reveal} onChange={handleRevealChange} size='small' />}
+            control={<Switch checked={!!reveal} onChange={handleRevealChange} size='small' />}
             label={<Typography variant='body2'>Reveal Only</Typography>}
           />
           <Box display='flex' gap={1} alignItems='center'>
