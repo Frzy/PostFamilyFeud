@@ -1,6 +1,6 @@
 [
   {
-    "text": "Name an Olympic sport you’d watch more often if it were played in the nude.",
+    "text": "Name an Olympic sport you'd watch more often if it were played in the nude.",
     "answers": [
       { "text": "Volleyball", "points": 21 },
       { "text": "Gymnastics", "points": 20 },
@@ -380,18 +380,7 @@
       { "text": "Taxes", "points": 4 }
     ]
   },
-  {
-    "text": "Name a gift you can pick up at the last minute.",
-    "answers": [
-      { "text": "Gift certificate", "points": 22 },
-      { "text": "Cash", "points": 20 },
-      { "text": "Flowers", "points": 19 },
-      { "text": "Book", "points": 6 },
-      { "text": "Candy", "points": 6 },
-      { "text": "Liquor", "points": 4 },
-      { "text": "Card", "points": 2 }
-    ]
-  },
+
   {
     "text": "Name the first letter of a word that's likely to be bleeped on TV.",
     "answers": [
@@ -403,58 +392,6 @@
       { "text": "P", "points": 3 },
       { "text": "T", "points": 2 },
       { "text": "D", "points": 2 }
-    ]
-  },
-  {
-    "text": "Name a holiday kids enjoy more than adults.",
-    "answers": [
-      { "text": "Christmas", "points": 40 },
-      { "text": "Birthdays", "points": 27 },
-      { "text": "Halloween", "points": 23 },
-      { "text": "Easter", "points": 2 },
-      { "text": "Christmas Eve", "points": 2 }
-    ]
-  },
-  {
-    "text": "Name someone who ran for U.S. President and did not win.",
-    "answers": [
-      { "text": "Hilary Clinton", "points": 56 },
-      { "text": "Al Gore", "points": 24 },
-      { "text": "Bernie Sanders", "points": 5 },
-      { "text": "Thomas E. Dewey", "points": 5 },
-      { "text": "Ralph Nader", "points": 3 },
-      { "text": "John McCain", "points": 2 }
-    ]
-  },
-  {
-    "text": "Name something that you probably shouldn't send in an email.",
-    "answers": [
-      { "text": "Naked pictures", "points": 34 },
-      { "text": "Password", "points": 16 },
-      { "text": "Social Security Number", "points": 13 },
-      { "text": "Virus", "points": 10 },
-      { "text": "Money", "points": 5 }
-    ]
-  },
-  {
-    "text": "Name a word or phrase that contains the word 'strip'.",
-    "answers": [
-      { "text": "Stripper", "points": 37 },
-      { "text": "Strip club", "points": 33 },
-      { "text": "Strip mall", "points": 12 },
-      { "text": "Strip tease", "points": 8 },
-      { "text": "Air strip", "points": 3 },
-      { "text": "Landing strip", "points": 3 }
-    ]
-  },
-  {
-    "text": "Name something specific you're afraid will happen to you on Friday the 13th",
-    "answers": [
-      { "text": "Car Accident", "points": 46 },
-      { "text": "Black Cat", "points": 16 },
-      { "text": "Fall Down", "points": 8 },
-      { "text": "Break Mirror", "points": 7 },
-      { "text": "Die", "points": 7 }
     ]
   }
 ]

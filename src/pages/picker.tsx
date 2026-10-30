@@ -50,7 +50,6 @@ enum NUM_ANSWER {
   FIVE = '5',
   SIX = '6',
   SEVEN = '7',
-  EIGHT = '8',
 }
 
 const ENDPOINT = '/api/questions'
@@ -64,7 +63,7 @@ export default function Picker() {
   const [mode, setMode] = React.useState(PICKER_MODE.BY_ANSWERS)
   const [view, setView] = React.useState(PICKER_VIEW.SEARCH)
   const [page, setPage] = React.useState(1)
-  const [numAnswer, setNumAnswer] = React.useState(NUM_ANSWER.ANY)
+  const [numAnswer, setNumAnswer] = React.useState(NUM_ANSWER.SEVEN)
   const [searchTerm, setSearchTerm] = React.useState('')
   const [fetching, setFetching] = React.useState(false)
   const [questionPool, setQuesitonPool] = React.useState<ListQuestion[]>()
@@ -78,7 +77,7 @@ export default function Picker() {
       setMode(newMode)
       setQuesitonPool(undefined)
       setSearchTerm('')
-      setNumAnswer(NUM_ANSWER.ANY)
+      setNumAnswer(NUM_ANSWER.SEVEN)
     }
   }
   function handleNumAnswerChange(
@@ -271,7 +270,6 @@ export default function Picker() {
                         size='small'
                       >
                         <ToggleButton value={PICKER_MODE.BY_ANSWERS}>By #</ToggleButton>
-                        <ToggleButton value={PICKER_MODE.BY_TERM}>Search</ToggleButton>
                         <ToggleButton value={PICKER_MODE.BY_FILE}>From File</ToggleButton>
                       </ToggleButtonGroup>
                       {mode === PICKER_MODE.BY_TERM && (
@@ -292,13 +290,11 @@ export default function Picker() {
                           onChange={handleNumAnswerChange}
                           fullWidth
                         >
-                          <ToggleButton value={NUM_ANSWER.ANY}>Any</ToggleButton>
                           <ToggleButton value={NUM_ANSWER.THREE}>3</ToggleButton>
                           <ToggleButton value={NUM_ANSWER.FOUR}>4</ToggleButton>
                           <ToggleButton value={NUM_ANSWER.FIVE}>5</ToggleButton>
                           <ToggleButton value={NUM_ANSWER.SIX}>6</ToggleButton>
                           <ToggleButton value={NUM_ANSWER.SEVEN}>7</ToggleButton>
-                          <ToggleButton value={NUM_ANSWER.EIGHT}>8</ToggleButton>
                         </ToggleButtonGroup>
                       )}
                     </React.Fragment>
@@ -311,7 +307,6 @@ export default function Picker() {
                         fullWidth
                       >
                         <ToggleButton value={PICKER_MODE.BY_ANSWERS}>By # of Answers</ToggleButton>
-                        <ToggleButton value={PICKER_MODE.BY_TERM}>By Search Term</ToggleButton>
                         <ToggleButton value={PICKER_MODE.BY_FILE}>From File</ToggleButton>
                       </ToggleButtonGroup>
                       {mode === PICKER_MODE.BY_TERM && (
@@ -331,13 +326,11 @@ export default function Picker() {
                           onChange={handleNumAnswerChange}
                           fullWidth
                         >
-                          <ToggleButton value={NUM_ANSWER.ANY}>Any</ToggleButton>
                           <ToggleButton value={NUM_ANSWER.THREE}>3</ToggleButton>
                           <ToggleButton value={NUM_ANSWER.FOUR}>4</ToggleButton>
                           <ToggleButton value={NUM_ANSWER.FIVE}>5</ToggleButton>
                           <ToggleButton value={NUM_ANSWER.SIX}>6</ToggleButton>
-                          <ToggleButton value={NUM_ANSWER.SEVEN}>7</ToggleButton>
-                          <ToggleButton value={NUM_ANSWER.EIGHT}>8</ToggleButton>
+                          <ToggleButton value={NUM_ANSWER.SEVEN}>7</ToggleButton> 
                         </ToggleButtonGroup>
                       )}
                     </Box>
